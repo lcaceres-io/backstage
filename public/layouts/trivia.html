@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<title>Trivia Barceló × Mundial 2026</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: rgb(0, 255, 0);
+    width: 100vw; height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 40px;
+    font-family: 'Raleway', sans-serif;
+    overflow: hidden;
+  }
+
+  .card {
+    width: 290px;
+    height: 813px;
+    background: linear-gradient(160deg, #EDF3FA 0%, #F7FAFD 25%, #F7FAFD 75%, #E4EDF7 100%);
+    padding: 30px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+
+  /* Patrón hexagonal tipo balón de fútbol — sutil pero visible */
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(60deg, rgba(0,76,151,0.07) 0px, rgba(0,76,151,0.07) 1px, transparent 1px, transparent 26px),
+      repeating-linear-gradient(-60deg, rgba(0,76,151,0.07) 0px, rgba(0,76,151,0.07) 1px, transparent 1px, transparent 26px),
+      repeating-linear-gradient(0deg, rgba(0,76,151,0.05) 0px, rgba(0,76,151,0.05) 1px, transparent 1px, transparent 26px);
+    pointer-events: none;
+  }
+
+  /* Glow radial arriba, detrás del título — sensación de reflector de estadio */
+  .card::after {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%;
+    width: 420px; height: 280px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse, rgba(0,76,151,0.22) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Glow radial abajo, simétrico — la épica cubre todo el contenedor */
+  .glow-bottom {
+    position: absolute;
+    bottom: -120px; left: 50%;
+    width: 420px; height: 280px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse, rgba(0,76,151,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Bloque angulado tipo broadcast — esquina superior derecha */
+  .shape-1 {
+    position: absolute;
+    top: -70px; right: -100px;
+    width: 260px; height: 260px;
+    background: linear-gradient(135deg, rgba(0,76,151,0.16), rgba(26,107,191,0.03));
+    transform: rotate(25deg);
+    pointer-events: none;
+  }
+
+  /* Bloque angulado inferior izquierdo */
+  .shape-2 {
+    position: absolute;
+    bottom: -110px; left: -80px;
+    width: 280px; height: 280px;
+    background: linear-gradient(45deg, rgba(0,76,151,0.13), transparent);
+    transform: rotate(-15deg);
+    pointer-events: none;
+  }
+
+  /* Acento angular medio-derecha */
+  .shape-3 {
+    position: absolute;
+    top: 32%; right: -60px;
+    width: 180px; height: 90px;
+    background: linear-gradient(90deg, transparent, rgba(0,76,151,0.14));
+    transform: rotate(-10deg);
+    pointer-events: none;
+  }
+
+  /* Acento angular medio-izquierda, da equilibrio al centro */
+  .shape-4 {
+    position: absolute;
+    top: 52%; left: -70px;
+    width: 200px; height: 100px;
+    background: linear-gradient(-90deg, transparent, rgba(26,107,191,0.13));
+    transform: rotate(12deg);
+    pointer-events: none;
+  }
+
+  /* Bloque angulado parte baja-derecha, cerca del footer */
+  .shape-5 {
+    position: absolute;
+    bottom: 60px; right: -90px;
+    width: 220px; height: 220px;
+    background: linear-gradient(225deg, rgba(0,76,151,0.12), transparent);
+    transform: rotate(-20deg);
+    pointer-events: none;
+  }
+
+  /* Líneas diagonales de velocidad — se extienden por todo el alto */
+  .speed-line {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .speed-line::before {
+    content: '';
+    position: absolute;
+    top: 24%; left: -20%;
+    width: 140%; height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(0,76,151,0.28), transparent);
+    transform: rotate(-8deg);
+  }
+  .speed-line::after {
+    content: '';
+    position: absolute;
+    top: 48%; left: -20%;
+    width: 140%; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(26,107,191,0.2), transparent);
+    transform: rotate(-8deg);
+  }
+
+  /* Tercera línea de velocidad, baja */
+  .speed-line-2 {
+    position: absolute;
+    top: 72%; left: -20%;
+    width: 140%; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,76,151,0.22), transparent);
+    transform: rotate(-8deg);
+    pointer-events: none;
+  }
+
+  /* Wrapper interno que se anima — ocupa el espacio del medio, no afecta título ni footer */
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    z-index: 1;
+    transform: translateX(140%);
+    opacity: 0;
+  }
+
+  .content.enter {
+    animation: slideIn 0.7s cubic-bezier(0.17, 0.89, 0.32, 1.28) forwards;
+  }
+  @keyframes slideIn {
+    0%   { transform: translateX(140%) skewX(4deg); opacity: 0; }
+    60%  { transform: translateX(-3%) skewX(-1deg); opacity: 1; }
+    80%  { transform: translateX(1.5%) skewX(0.5deg); }
+    100% { transform: translateX(0) skewX(0deg); opacity: 1; }
+  }
+
+  .content.exit {
+    animation: slideOut 0.5s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+  }
+  @keyframes slideOut {
+    0%   { transform: translateX(0) skewX(0deg); opacity: 1; }
+    100% { transform: translateX(-140%) skewX(-4deg); opacity: 0; }
+  }
+
+  .main-title {
+    position: relative;
+    z-index: 1;
+    font-size: 23px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #ffffff;
+    line-height: 1.15;
+    text-align: center;
+    background: linear-gradient(135deg, #004C97, #1A6BBF);
+    padding: 14px 8px;
+  }
+  .main-title span {
+    color: #C8D8EC;
+  }
+
+  .accent-strip {
+    position: absolute;
+    top: 0; left: 0;
+    width: 60px; height: 8px;
+    background: linear-gradient(90deg, #004C97, #1A6BBF);
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+  }
+
+  .card-inner {
+    position: relative;
+  }
+
+  .tag {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #ffffff;
+    background: #004C97;
+    display: inline-block;
+    padding: 6px 14px;
+    clip-path: polygon(0 0, 100% 0, 92% 100%, 0% 100%);
+  }
+
+  .question {
+    font-size: 19px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #0A1628;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 14px;
+    background: #EEF3F8;
+    border-left: 3px solid #C8D8EC;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #1A2B3C;
+    letter-spacing: 0.02em;
+    transform: translateX(0);
+    transition: background 0.3s, color 0.3s, transform 0.3s, border-color 0.3s;
+  }
+
+  .option .letter {
+    font-size: 13px;
+    font-weight: 900;
+    color: #004C97;
+    min-width: 20px;
+  }
+
+  .option.correct {
+    animation: blink 0.55s ease-in-out 4;
+  }
+  @keyframes blink {
+    0%, 100% {
+      background: #EEF3F8;
+      color: #1A2B3C;
+      border-left-color: #C8D8EC;
+      transform: translateX(0) scale(1);
+    }
+    50% {
+      background: #004C97;
+      color: #ffffff;
+      border-left-color: #ffffff;
+      transform: translateX(6px) scale(1.03);
+    }
+  }
+  .option.correct.settled {
+    background: #004C97;
+    color: #ffffff;
+    border-left-color: #ffffff;
+    transform: translateX(6px) scale(1.02);
+  }
+  .option.correct .letter {
+    transition: color 0.3s;
+  }
+  .option.correct.settled .letter {
+    color: #C8D8EC;
+  }
+
+  .explanation {
+    font-size: 13px;
+    font-weight: 600;
+    color: #5A6472;
+    line-height: 1.5;
+    text-transform: none;
+    border-left: 4px solid #1A6BBF;
+    padding-left: 12px;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .explanation.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .logo-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding-top: 4px;
+  }
+  .logo-footer img.fl-barcelo {
+    width: 150px;
+    opacity: 0.6;
+  }
+  .logo-footer .footer-divider {
+    width: 1px;
+    height: 36px;
+    background: rgba(0,0,0,0.15);
+  }
+  .logo-footer img.fl-fifa {
+    width: 70px;
+    object-fit: contain;
+  }
+</style>
+</head>
+<body>
+
+<div class="card" id="card">
+  <div class="shape-1"></div>
+  <div class="shape-2"></div>
+  <div class="shape-3"></div>
+  <div class="shape-4"></div>
+  <div class="shape-5"></div>
+  <div class="glow-bottom"></div>
+  <div class="speed-line"></div>
+  <div class="speed-line-2"></div>
+
+  <div class="main-title">TRIVIA<br><span>MUNDIAL</span></div>
+
+  <div class="content" id="content">
+    <div class="accent-strip"></div>
+    <div class="card-inner">
+      <div class="tag" id="tag"></div>
+    </div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+
+  <div class="logo-footer">
+    <img class="fl-barcelo" src="https://barcelo.edu.ar/assets/imgs/iconos/barcelo.svg?v=4" alt="Barceló">
+    <div class="footer-divider"></div>
+    <img class="fl-fifa" src="https://logoheritage.com/wp-content/uploads/2025/12/World-Cup-2026-Logo-PNG-300x169.png" alt="FIFA World Cup 2026">
+  </div>
+</div>
+
+<script>
+const trivia = [
+  {
+    tag: "Psicología + Fútbol",
+    question: "En una definición por penales, ¿qué factor psicológico puede afectar más el rendimiento?",
+    options: ["Estrés", "Color de la camiseta", "Cantidad de goles previos"],
+    correct: 0,
+    explanation: "El estrés afecta la coordinación motora y la toma de decisiones bajo presión."
+  },
+  {
+    tag: "Psicología + Fútbol",
+    question: "¿Qué habilidad mental ayuda a mantener la concentración durante los 90 minutos?",
+    options: ["Atención sostenida", "Memoria fotográfica", "Improvisación"],
+    correct: 0,
+    explanation: "La atención sostenida permite mantener el foco en la tarea durante períodos prolongados."
+  },
+  {
+    tag: "Kinesiología + Fútbol",
+    question: "¿Qué grupo muscular participa principalmente al patear una pelota?",
+    options: ["Cuádriceps", "Bíceps", "Deltoides"],
+    correct: 0,
+    explanation: "El cuádriceps es el principal extensor de la rodilla, clave en el pateo."
+  },
+  {
+    tag: "Kinesiología + Fútbol",
+    question: "¿Cuál es una de las lesiones más frecuentes en el fútbol?",
+    options: ["Esguince de tobillo", "Luxación de hombro", "Fractura de muñeca"],
+    correct: 0,
+    explanation: "Los esguinces de tobillo representan hasta el 20% de las lesiones en el fútbol."
+  },
+  {
+    tag: "Nutrición + Fútbol",
+    question: "¿Qué nutriente aporta la mayor parte de la energía durante un partido?",
+    options: ["Carbohidratos", "Calcio", "Vitamina C"],
+    correct: 0,
+    explanation: "Los carbohidratos son el combustible principal durante el ejercicio de alta intensidad."
+  },
+  {
+    tag: "Nutrición + Fútbol",
+    question: "¿Qué puede ocurrir si un jugador no se hidrata correctamente?",
+    options: ["Disminuye el rendimiento", "Mejora la velocidad", "Aumenta la fuerza"],
+    correct: 0,
+    explanation: "Una deshidratación del 2% ya reduce el rendimiento físico y cognitivo."
+  },
+  {
+    tag: "Medicina + Fútbol",
+    question: "Durante un partido intenso, ¿qué sistema trabaja más para llevar oxígeno a los músculos?",
+    options: ["Cardiovascular", "Digestivo", "Endocrino"],
+    correct: 0,
+    explanation: "El corazón puede aumentar su frecuencia hasta 200 lat/min durante el esfuerzo máximo."
+  },
+  {
+    tag: "Medicina + Fútbol",
+    question: "¿Qué signo suele indicar agotamiento por calor en un deportista?",
+    options: ["Mareos", "Mejor concentración", "Más fuerza muscular"],
+    correct: 0,
+    explanation: "Los mareos son señal de alarma que requieren hidratación y reposo inmediatos."
+  },
+  {
+    tag: "Enfermería + Fútbol",
+    question: "Ante una caída fuerte en el campo, ¿qué debe evaluarse primero?",
+    options: ["Estado general del jugador", "Resultado del partido", "Posición en la cancha"],
+    correct: 0,
+    explanation: "La evaluación primaria del paciente siempre prioriza consciencia y signos vitales."
+  },
+  {
+    tag: "Análisis Clínicos + Fútbol",
+    question: "¿Qué muestra suele utilizarse para evaluar el estado físico de un deportista?",
+    options: ["Sangre", "Cabello", "Uñas"],
+    correct: 0,
+    explanation: "Los análisis de sangre revelan niveles de hierro, glucosa y marcadores de inflamación."
+  },
+  {
+    tag: "¿Qué carrera de Barceló lo sabe?",
+    question: "¿Por qué los jugadores se hidratan durante el partido?",
+    options: ["Medicina", "Nutrición", "Psicología"],
+    correct: 1,
+    explanation: "Nutrición estudia el rol del agua y electrolitos en el rendimiento deportivo."
+  },
+  {
+    tag: "¿Qué carrera de Barceló lo sabe?",
+    question: "¿Qué profesional estudia la prevención de lesiones musculares en deportistas?",
+    options: ["Kinesiología", "Enfermería", "Psicología"],
+    correct: 0,
+    explanation: "El kinesiólogo evalúa, previene y rehabilita lesiones del aparato locomotor."
+  },
+  {
+    tag: "¿Qué carrera de Barceló lo sabe?",
+    question: "¿Qué área estudia cómo influye la presión en una definición por penales?",
+    options: ["Medicina", "Psicología", "Análisis Clínicos"],
+    correct: 1,
+    explanation: "La psicología del deporte trabaja el manejo del estrés y la presión competitiva."
+  }
+];
+
+const QUESTION_TIME = 15000;
+const ANSWER_TIME   = 5000;
+const EXIT_TIME     = 500;
+
+let current = 0;
+
+function letters(i) { return ['A', 'B', 'C'][i]; }
+
+function buildQuestion(index) {
+  const q = trivia[index];
+  const content = document.getElementById('content');
+
+  content.classList.remove('enter', 'exit');
+  content.style.transform = 'translateX(140%)';
+  content.style.opacity = '0';
+
+  document.getElementById('tag').textContent = q.tag;
+  document.getElementById('question').textContent = q.question;
+  document.getElementById('explanation').textContent = q.explanation;
+  document.getElementById('explanation').classList.remove('visible');
+
+  const optionsEl = document.getElementById('options');
+  optionsEl.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.id = 'opt-' + i;
+    div.innerHTML = `<span class="letter">${letters(i)}</span> ${opt}`;
+    optionsEl.appendChild(div);
+  });
+
+  requestAnimationFrame(() => {
+    content.classList.add('enter');
+  });
+
+  setTimeout(() => {
+    const correctOpt = document.getElementById('opt-' + q.correct);
+    correctOpt.classList.add('correct');
+    document.getElementById('explanation').classList.add('visible');
+
+    setTimeout(() => {
+      correctOpt.classList.add('settled');
+    }, 2200);
+
+    setTimeout(() => {
+      content.classList.remove('enter');
+      content.classList.add('exit');
+
+      setTimeout(() => {
+        current = (current + 1) % trivia.length;
+        buildQuestion(current);
+      }, EXIT_TIME);
+
+    }, ANSWER_TIME);
+
+  }, QUESTION_TIME);
+}
+
+buildQuestion(current);
+</script>
+
+</body>
+</html>

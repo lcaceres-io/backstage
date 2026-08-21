@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Control Lower Third</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0f1115;
+    color: #f1f1f1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .panel {
+    width: 100%;
+    max-width: 560px;
+    background: #171a21;
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  }
+
+  h2 { font-size: 20px; margin-bottom: 4px; }
+  p.sub { color: #9aa0aa; font-size: 13px; margin-bottom: 20px; }
+
+  textarea {
+    width: 100%;
+    min-height: 80px;
+    resize: vertical;
+    background: #0f1115;
+    border: 1px solid #2a2f3a;
+    border-radius: 8px;
+    color: #fff;
+    padding: 12px;
+    font-size: 15px;
+    font-family: inherit;
+  }
+  textarea:focus { outline: none; border-color: #4c8bf5; }
+
+  .status {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #9aa0aa;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #555;
+  }
+  .dot.on { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  button {
+    flex: 1;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  button:active { opacity: 0.75; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-send { background: #2ecc71; color: #06210f; }
+  .btn-hide { background: #e74c3c; color: #2b0906; }
+
+  .preview-label {
+    font-size: 12px;
+    color: #9aa0aa;
+    margin: 22px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .preview-frame {
+    background: #00FF00;
+    border-radius: 8px;
+    height: 130px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .preview-grid {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 14px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+  }
+
+  .preview-lt {
+    grid-column: 3 / span 4;
+    background: #fff;
+    border-radius: 0;
+    padding: 8px 18px;
+    width: 100%;
+  }
+
+  .preview-lt h1 {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    color: #000;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.15;
+    word-break: break-word;
+  }
+</style>
+</head>
+<body>
+  <div class="panel">
+    <h2>Lower Third — Control</h2>
+    <p class="sub">Escribí el texto, previsualizá y disparalo en el overlay.</p>
+
+    <textarea id="text" placeholder="Texto del lower third..." maxlength="120"></textarea>
+
+    <div class="status">
+      <span class="dot" id="statusDot"></span>
+      <span id="statusText">Cargando estado...</span>
+    </div>
+
+    <div class="actions">
+      <button class="btn-send" id="btnSend">Enviar</button>
+      <button class="btn-hide" id="btnHide">Ocultar</button>
+    </div>
+
+    <div class="preview-label">Previsualización</div>
+    <div class="preview-frame">
+      <div class="preview-grid">
+        <div class="preview-lt">
+          <h1 id="previewText"></h1>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const textArea = document.getElementById('text');
+    const previewText = document.getElementById('previewText');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const btnSend = document.getElementById('btnSend');
+    const btnHide = document.getElementById('btnHide');
+
+    function updatePreview() {
+      previewText.textContent = textArea.value;
+    }
+    textArea.addEventListener('input', updatePreview);
+    updatePreview();
+
+    btnSend.addEventListener('click', () => {
+      const text = textArea.value.trim();
+      if (!text) return;
+      socket.emit('show', { text });
+    });
+
+    btnHide.addEventListener('click', () => {
+      socket.emit('hide');
+    });
+
+    socket.on('state', (state) => {
+      const isOn = !!state.visible && !!state.text;
+      statusDot.classList.toggle('on', isOn);
+      statusText.textContent = isOn ? `En pantalla: "${state.text}"` : 'Oculto';
+      if (state.text && document.activeElement !== textArea) {
+        textArea.value = state.text;
+        updatePreview();
+      }
+    });
+  </script>
+</body>
+</html>

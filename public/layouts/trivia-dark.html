@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<title>Trivia Barceló × Mundial 2026 — Dark</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: rgb(0, 255, 0);
+    width: 100vw; height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 40px;
+    font-family: 'Raleway', sans-serif;
+    overflow: hidden;
+  }
+
+  .card {
+    width: 290px;
+    height: 813px;
+    background: linear-gradient(160deg, #142238 0%, #1B2D47 25%, #1B2D47 75%, #11203A 100%);
+    padding: 30px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Patrón hexagonal tipo balón de fútbol — sobre negro, en azul claro */
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(60deg, rgba(58,143,216,0.05) 0px, rgba(58,143,216,0.05) 1px, transparent 1px, transparent 26px),
+      repeating-linear-gradient(-60deg, rgba(58,143,216,0.05) 0px, rgba(58,143,216,0.05) 1px, transparent 1px, transparent 26px),
+      repeating-linear-gradient(0deg, rgba(58,143,216,0.03) 0px, rgba(58,143,216,0.03) 1px, transparent 1px, transparent 26px);
+    pointer-events: none;
+  }
+
+  /* Glow radial arriba — reflector de estadio sobre negro */
+  .card::after {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%;
+    width: 420px; height: 280px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse, rgba(26,107,191,0.22) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Glow radial abajo, simétrico */
+  .glow-bottom {
+    position: absolute;
+    bottom: -120px; left: 50%;
+    width: 420px; height: 280px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse, rgba(26,107,191,0.16) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Bloque angulado tipo broadcast — esquina superior derecha */
+  .shape-1 {
+    position: absolute;
+    top: -70px; right: -100px;
+    width: 260px; height: 260px;
+    background: linear-gradient(135deg, rgba(26,107,191,0.14), rgba(58,143,216,0.02));
+    transform: rotate(25deg);
+    pointer-events: none;
+  }
+
+  /* Bloque angulado inferior izquierdo */
+  .shape-2 {
+    position: absolute;
+    bottom: -110px; left: -80px;
+    width: 280px; height: 280px;
+    background: linear-gradient(45deg, rgba(26,107,191,0.11), transparent);
+    transform: rotate(-15deg);
+    pointer-events: none;
+  }
+
+  /* Acento angular medio-derecha */
+  .shape-3 {
+    position: absolute;
+    top: 32%; right: -60px;
+    width: 180px; height: 90px;
+    background: linear-gradient(90deg, transparent, rgba(26,107,191,0.12));
+    transform: rotate(-10deg);
+    pointer-events: none;
+  }
+
+  /* Acento angular medio-izquierda */
+  .shape-4 {
+    position: absolute;
+    top: 52%; left: -70px;
+    width: 200px; height: 100px;
+    background: linear-gradient(-90deg, transparent, rgba(58,143,216,0.10));
+    transform: rotate(12deg);
+    pointer-events: none;
+  }
+
+  /* Bloque angulado parte baja-derecha, cerca del footer */
+  .shape-5 {
+    position: absolute;
+    bottom: 60px; right: -90px;
+    width: 220px; height: 220px;
+    background: linear-gradient(225deg, rgba(26,107,191,0.10), transparent);
+    transform: rotate(-20deg);
+    pointer-events: none;
+  }
+
+  /* Líneas diagonales de velocidad — se extienden por todo el alto */
+  .speed-line {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .speed-line::before {
+    content: '';
+    position: absolute;
+    top: 24%; left: -20%;
+    width: 140%; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(58,143,216,0.22), transparent);
+    transform: rotate(-8deg);
+  }
+  .speed-line::after {
+    content: '';
+    position: absolute;
+    top: 48%; left: -20%;
+    width: 140%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(26,107,191,0.18), transparent);
+    transform: rotate(-8deg);
+  }
+
+  /* Tercera línea de velocidad, baja */
+  .speed-line-2 {
+    position: absolute;
+    top: 72%; left: -20%;
+    width: 140%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(58,143,216,0.18), transparent);
+    transform: rotate(-8deg);
+    pointer-events: none;
+  }
+
+  /* Wrapper interno que se anima — ocupa el espacio del medio, no afecta título ni footer */
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    z-index: 1;
+    transform: translateX(140%);
+    opacity: 0;
+  }
+
+  .content.enter {
+    animation: slideIn 0.7s cubic-bezier(0.17, 0.89, 0.32, 1.28) forwards;
+  }
+  @keyframes slideIn {
+    0%   { transform: translateX(140%) skewX(4deg); opacity: 0; }
+    60%  { transform: translateX(-3%) skewX(-1deg); opacity: 1; }
+    80%  { transform: translateX(1.5%) skewX(0.5deg); }
+    100% { transform: translateX(0) skewX(0deg); opacity: 1; }
+  }
+
+  .content.exit {
+    animation: slideOut 0.5s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+  }
+  @keyframes slideOut {
+    0%   { transform: translateX(0) skewX(0deg); opacity: 1; }
+    100% { transform: translateX(-140%) skewX(-4deg); opacity: 0; }
+  }
+
+  .main-title {
+    position: relative;
+    z-index: 1;
+    font-size: 23px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #ffffff;
+    line-height: 1.15;
+    text-align: center;
+    background: linear-gradient(135deg, #004C97, #1A6BBF);
+    padding: 14px 8px;
+  }
+  .main-title span {
+    color: #C8D8EC;
+  }
+
+  .accent-strip {
+    position: absolute;
+    top: 0; left: 0;
+    width: 60px; height: 8px;
+    background: linear-gradient(90deg, #004C97, #3A8FD8);
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+  }
+
+  .card-inner {
+    position: relative;
+  }
+
+  .tag {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #ffffff;
+    background: #1A6BBF;
+    display: inline-block;
+    padding: 6px 14px;
+    clip-path: polygon(0 0, 100% 0, 92% 100%, 0% 100%);
+  }
+
+  .question {
+    font-size: 19px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #ffffff;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 14px;
+    background: rgba(58,143,216,0.07);
+    border-left: 3px solid rgba(58,143,216,0.3);
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #E4EDF7;
+    letter-spacing: 0.02em;
+    transform: translateX(0);
+    transition: background 0.3s, color 0.3s, transform 0.3s, border-color 0.3s;
+  }
+
+  .option .letter {
+    font-size: 13px;
+    font-weight: 900;
+    color: #3A8FD8;
+    min-width: 20px;
+  }
+
+  .option.correct {
+    animation: blink 0.55s ease-in-out 4;
+  }
+  @keyframes blink {
+    0%, 100% {
+      background: rgba(58,143,216,0.07);
+      color: #E4EDF7;
+      border-left-color: rgba(58,143,216,0.3);
+      transform: translateX(0) scale(1);
+    }
+    50% {
+      background: #1A6BBF;
+      color: #ffffff;
+      border-left-color: #ffffff;
+      transform: translateX(6px) scale(1.03);
+    }
+  }
+  .option.correct.settled {
+    background: #1A6BBF;
+    color: #ffffff;
+    border-left-color: #ffffff;
+    transform: translateX(6px) scale(1.02);
+  }
+  .option.correct .letter {
+    transition: color 0.3s;
+  }
+  .option.correct.settled .letter {
+    color: #C8D8EC;
+  }
+
+  .explanation {
+    font-size: 13px;
+    font-weight: 600;
+    color: #9FB3CC;
+    line-height: 1.5;
+    text-transform: none;
+    border-left: 4px solid #3A8FD8;
+    padding-left: 12px;
+    margin-top: 12px;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .explanation.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .logo-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 4px;
+  }
+  .logo-footer img.fl-fifa {
+    width: 130px;
+    object-fit: contain;
+  }
+</style>
+</head>
+<body>
+
+<div class="card" id="card">
+  <div class="shape-1"></div>
+  <div class="shape-2"></div>
+  <div class="shape-3"></div>
+  <div class="shape-4"></div>
+  <div class="shape-5"></div>
+  <div class="glow-bottom"></div>
+  <div class="speed-line"></div>
+  <div class="speed-line-2"></div>
+
+  <div class="main-title">TRIVIA<br><span>MUNDIAL</span></div>
+
+  <div class="content" id="content">
+    <div class="accent-strip"></div>
+    <div class="card-inner">
+      <div class="tag" id="tag"></div>
+    </div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+
+<!--
+  <div class="logo-footer">
+    <img class="fl-fifa" src="https://logoheritage.com/wp-content/uploads/2025/12/World-Cup-2026-Logo-PNG-300x169.png" alt="FIFA World Cup 2026">
+  </div>
+</div>
+-->
+<script>
+const trivia = [
+  {
+    tag: "Psicología + Fútbol",
+    question: "En una definición por penales, ¿qué factor psicológico puede afectar más el rendimiento?",
+    options: ["Color de la camiseta", "Estrés", "Cantidad de goles previos"],
+    correct: 1,
+    explanation: "El estrés afecta la coordinación motora y la toma de decisiones bajo presión."
+  },
+  {
+    tag: "Psicología + Fútbol",
+    question: "¿Qué habilidad mental ayuda a mantener la concentración durante los 90 minutos?",
+    options: ["Atención sostenida", "Memoria fotográfica", "Improvisación"],
+    correct: 0,
+    explanation: "La atención sostenida permite mantener el foco en la tarea durante períodos prolongados."
+  },
+{
+    tag: "Kinesiología + Fútbol",
+    question: "¿Qué grupo muscular participa principalmente al patear una pelota?",
+    options: ["Bíceps", "Deltoides", "Cuádriceps"],
+    correct: 2,
+    explanation: "El cuádriceps es el principal extensor de la rodilla, clave en el pateo."
+  },
+  {
+    tag: "Kinesiología + Fútbol",
+    question: "¿Cuál es una de las lesiones más frecuentes en el fútbol?",
+    options: ["Luxación de hombro", "Fractura de muñeca", "Esguince de tobillo"],
+    correct: 2,
+    explanation: "Los esguinces de tobillo representan hasta el 20% de las lesiones en el fútbol."
+  },
+  {
+    tag: "Nutrición + Fútbol",
+    question: "¿Qué nutriente aporta la mayor parte de la energía durante un partido?",
+    options: ["Carbohidratos", "Calcio", "Vitamina C"],
+    correct: 0,
+    explanation: "Los carbohidratos son el combustible principal durante el ejercicio de alta intensidad."
+  },
+  {
+    tag: "Nutrición + Fútbol",
+    question: "¿Qué puede ocurrir si un jugador no se hidrata correctamente?",
+    options: ["Mejora la velocidad","Disminuye el rendimiento","Aumenta la fuerza"],
+    correct: 1,
+    explanation: "Una deshidratación del 2% ya reduce el rendimiento físico y cognitivo."
+  },
+  {
+    tag: "Medicina + Fútbol",
+    question: "Durante un partido intenso, ¿qué sistema trabaja más para llevar oxígeno a los músculos?",
+    options: ["Cardiovascular", "Digestivo", "Endocrino"],
+    correct: 0,
+    explanation: "El corazón puede aumentar su frecuencia hasta 200 lat/min durante el esfuerzo máximo."
+  },
+  {
+    tag: "Medicina + Fútbol",
+    question: "¿Qué signo suele indicar agotamiento por calor en un deportista?",
+    options: ["Mejor concentración", "Más fuerza muscular","Mareos"],
+    correct: 2,
+    explanation: "Los mareos son señal de alarma que requieren hidratación y reposo inmediatos."
+  },
+  {
+    tag: "Enfermería + Fútbol",
+    question: "Ante una caída fuerte en el campo, ¿qué debe evaluarse primero?",
+    options: ["Estado general del jugador", "Resultado del partido", "Posición en la cancha"],
+    correct: 0,
+    explanation: "La evaluación primaria del paciente siempre prioriza consciencia y signos vitales."
+  },
+  {
+    tag: "Análisis Clínicos + Fútbol",
+    question: "¿Qué muestra suele utilizarse para evaluar el estado físico de un deportista?",
+    options: ["Sangre", "Cabello", "Uñas"],
+    correct: 0,
+    explanation: "Los análisis de sangre revelan niveles de hierro, glucosa y marcadores de inflamación."
+  },
+  {
+    tag: "¿Qué carrera de Barceló lo sabe?",
+    question: "¿Por qué los jugadores se hidratan durante el partido?",
+    options: ["Medicina", "Nutrición", "Psicología"],
+    correct: 1,
+    explanation: "Nutrición estudia el rol del agua y electrolitos en el rendimiento deportivo."
+  },
+  {
+    tag: "¿Qué carrera de Barceló lo sabe?",
+    question: "¿Qué profesional estudia la prevención de lesiones musculares en deportistas?",
+    options: ["Kinesiología", "Enfermería", "Psicología"],
+    correct: 0,
+    explanation: "El kinesiólogo evalúa, previene y rehabilita lesiones del aparato locomotor."
+  },
+  {
+    tag: "¿Qué carrera de Barceló lo sabe?",
+    question: "¿Qué área estudia cómo influye la presión en una definición por penales?",
+    options: ["Medicina", "Psicología", "Análisis Clínicos"],
+    correct: 1,
+    explanation: "La psicología del deporte trabaja el manejo del estrés y la presión competitiva."
+  },
+
+{
+  tag: "Psicología + Fútbol",
+  question: "¿Qué proceso psicológico permite anticipar la jugada de un rival antes de que ocurra?",
+  options: ["Motivación", "Percepción", "Atención dividida"],
+  correct: 1,
+  explanation: "La percepción permite interpretar señales del entorno y anticipar acciones."
+},
+
+{
+  tag: "Medicina + Fútbol",
+  question: "Durante un esfuerzo intenso, ¿qué adaptación fisiológica aumenta el aporte de oxígeno a los músculos?",
+  options: ["Disminución de la sudoración", "Reducción de la temperatura corporal", "Aumento de la frecuencia cardíaca"],
+  correct: 2,
+  explanation: "El aumento de la frecuencia cardíaca incrementa el flujo sanguíneo y el transporte de oxígeno."
+},
+
+{
+  tag: "Nutrición + Fútbol",
+  question: "¿Cuál es la principal reserva de carbohidratos utilizada durante un partido?",
+  options: ["Glucógeno muscular", "Calcio óseo", "Colesterol"],
+  correct: 0,
+  explanation: "El glucógeno muscular constituye una fuente clave de energía durante el ejercicio."
+},
+
+{
+  tag: "Kinesiología + Fútbol",
+  question: "¿Qué movimiento realiza principalmente el cuádriceps al patear una pelota?",
+  options: ["Flexión de cadera", "Rotación de tobillo", "Extensión de rodilla"],
+  correct: 2,
+  explanation: "El cuádriceps es el principal responsable de la extensión de la rodilla."
+},
+
+{
+  tag: "¿Qué carrera de Barceló lo sabe?",
+  question: "¿Qué disciplina estudia la relación entre alimentación y rendimiento deportivo?",
+  options: ["Psicología", "Nutrición", "Enfermería"],
+  correct: 1,
+  explanation: "La nutrición deportiva analiza cómo la alimentación impacta en el desempeño físico."
+},
+
+{
+  tag: "Análisis Clínicos + Fútbol",
+  question: "¿Qué parámetro sanguíneo suele evaluarse para detectar anemia en deportistas?",
+  options: ["Plaquetas", "Hemoglobina", "Bilirrubina"],
+  correct: 1,
+  explanation: "La hemoglobina es fundamental para el transporte de oxígeno en la sangre."
+},
+
+{
+  tag: "Enfermería + Fútbol",
+  question: "En una evaluación inicial tras una lesión, ¿qué aspecto se prioriza?",
+  options: ["Estado de consciencia", "Posición táctica", "Historial deportivo"],
+  correct: 0,
+  explanation: "La valoración primaria comienza verificando consciencia y funciones vitales."
+},
+
+{
+  tag: "Psicología + Fútbol",
+  question: "¿Qué habilidad psicológica ayuda a recuperarse rápidamente después de cometer un error durante el partido?",
+  options: ["Memorización", "Sugestión", "Resiliencia"],
+  correct: 2,
+  explanation: "La resiliencia permite adaptarse y recuperarse ante situaciones adversas."
+},
+
+{
+  tag: "Kinesiología + Fútbol",
+  question: "¿Cuál es el objetivo principal del trabajo propioceptivo en deportistas?",
+  options: ["Aumentar la masa ósea", "Mejorar el control del movimiento", "Reducir la frecuencia cardíaca"],
+  correct: 1,
+  explanation: "La propiocepción mejora el equilibrio, la coordinación y la prevención de lesiones."
+},
+
+{
+  tag: "¿Qué carrera de Barceló lo sabe?",
+  question: "¿Qué profesional está especialmente capacitado para diseñar programas de rehabilitación tras una lesión deportiva?",
+  options: ["Kinesiólogo", "Bioquímico", "Psicólogo"],
+  correct: 0,
+  explanation: "La rehabilitación funcional es una de las competencias centrales de la Kinesiología."
+}
+
+
+];
+
+const QUESTION_TIME = 15000;
+const ANSWER_TIME   = 5000;
+const EXIT_TIME     = 500;
+
+let current = 0;
+
+function letters(i) { return ['A', 'B', 'C'][i]; }
+
+function buildQuestion(index) {
+  const q = trivia[index];
+  const content = document.getElementById('content');
+
+  content.classList.remove('enter', 'exit');
+  content.style.transform = 'translateX(140%)';
+  content.style.opacity = '0';
+
+  document.getElementById('tag').textContent = q.tag;
+  document.getElementById('question').textContent = q.question;
+  document.getElementById('explanation').textContent = q.explanation;
+  document.getElementById('explanation').classList.remove('visible');
+
+  const optionsEl = document.getElementById('options');
+  optionsEl.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.id = 'opt-' + i;
+    div.innerHTML = `<span class="letter">${letters(i)}</span> ${opt}`;
+    optionsEl.appendChild(div);
+  });
+
+  requestAnimationFrame(() => {
+    content.classList.add('enter');
+  });
+
+  setTimeout(() => {
+    const correctOpt = document.getElementById('opt-' + q.correct);
+    correctOpt.classList.add('correct');
+    document.getElementById('explanation').classList.add('visible');
+
+    setTimeout(() => {
+      correctOpt.classList.add('settled');
+    }, 2200);
+
+    setTimeout(() => {
+      content.classList.remove('enter');
+      content.classList.add('exit');
+
+      setTimeout(() => {
+        current = (current + 1) % trivia.length;
+        buildQuestion(current);
+      }, EXIT_TIME);
+
+    }, ANSWER_TIME);
+
+  }, QUESTION_TIME);
+}
+
+buildQuestion(current);
+</script>
+
+</body>
+</html>

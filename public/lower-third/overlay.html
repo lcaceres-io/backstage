@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Lower Third Overlay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700;800;900&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #00FF00; /* chroma key green */
+  }
+
+  /* 8-column safe-area grid: box occupies columns 3-6 (4 of 8),
+     leaving 2 columns free on each side */
+  .lt-grid {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 8%;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    column-gap: 0;
+    pointer-events: none;
+  }
+
+  .lt-wrap {
+    grid-column: 3 / span 4;
+    transform: translateY(150%);
+    transition: transform 0.6s cubic-bezier(.2, .8, .2, 1);
+  }
+
+  .lt-wrap.visible {
+    transform: translateY(0);
+  }
+
+  .lt-box {
+    background: #ffffff;
+    border-radius: 0;
+    padding: 18px 40px;
+    width: 100%;
+  }
+
+  .lt-box h1 {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 900;
+    font-size: 42px;
+    color: #000000;
+    text-transform: uppercase;
+    text-align: center;
+    white-space: pre-wrap;
+    line-height: 1.1;
+    letter-spacing: 0.5px;
+    word-break: break-word;
+  }
+</style>
+</head>
+<body>
+  <div class="lt-grid">
+    <div class="lt-wrap" id="ltWrap">
+      <div class="lt-box">
+        <h1 id="ltText"></h1>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const wrap = document.getElementById('ltWrap');
+    const textEl = document.getElementById('ltText');
+
+    socket.on('state', (state) => {
+      textEl.textContent = state.text || '';
+      wrap.classList.toggle('visible', !!state.visible && !!state.text);
+    });
+  </script>
+</body>
+</html>

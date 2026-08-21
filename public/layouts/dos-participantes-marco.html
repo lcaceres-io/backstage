@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dos Participantes (Marco) — Barceló</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 1920px; height: 1080px;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  /* ── Variables del agujero ── */
+  :root {
+    --hole-x: 760px;   /* distancia desde la izquierda */
+    --hole-y: 140px;   /* distancia desde arriba       */
+    --hole-w: 400px;   /* ancho del agujero            */
+    --hole-h: 800px;   /* alto del agujero             */
+    --glow: rgba(255,255,255,0.85);
+  }
+
+  /* ── 4 paneles que rodean el hueco ── */
+  .panel {
+    position: fixed;
+    background: linear-gradient(135deg, #001f3f 0%, #003875 40%, #004C97 100%);
+  }
+
+  /* ARRIBA */
+  .panel-top {
+    top: 0; left: 0; right: 0;
+    height: var(--hole-y);
+  }
+  /* ABAJO */
+  .panel-bottom {
+    left: 0; right: 0; bottom: 0;
+    top: calc(var(--hole-y) + var(--hole-h));
+  }
+  /* IZQUIERDA */
+  .panel-left {
+    top: var(--hole-y);
+    left: 0;
+    width: var(--hole-x);
+    height: var(--hole-h);
+  }
+  /* DERECHA */
+  .panel-right {
+    top: var(--hole-y);
+    left: calc(var(--hole-x) + var(--hole-w));
+    right: 0;
+    height: var(--hole-h);
+  }
+
+  /* ── Grilla animada sobre cada panel ── */
+  .panel::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,76,151,0.15) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,76,151,0.15) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 20s linear infinite;
+  }
+  @keyframes gridMove {
+    0%   { background-position: 0 0; }
+    100% { background-position: 60px 60px; }
+  }
+
+  /* ── Radiales de profundidad ── */
+  .bg-radial {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 60% at 20% 50%, rgba(0,76,151,0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 80% 80%, rgba(26,107,191,0.15) 0%, transparent 70%);
+  }
+
+  /* ── Partículas ── */
+  .particles { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    background: #3A8FD8;
+    opacity: 0;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) scale(0); opacity: 0; }
+    10%  { opacity: 0.5; transform: translateY(-10px) scale(1); }
+    90%  { opacity: 0.25; }
+    100% { transform: translateY(-120px) scale(0.3); opacity: 0; }
+  }
+
+  /* ── Borde glow del agujero ── */
+  .hole-border {
+    position: fixed;
+    top: var(--hole-y);
+    left: var(--hole-x);
+    width: var(--hole-w);
+    height: var(--hole-h);
+    border: 1.5px solid var(--glow);
+    box-shadow:
+      0 0 6px 1px rgba(255,255,255,0.55),
+      0 0 16px 3px rgba(255,255,255,0.15),
+      inset 0 0 6px 1px rgba(255,255,255,0.08);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+  <!-- 4 paneles -->
+  <div class="panel panel-top"></div>
+  <div class="panel panel-bottom"></div>
+  <div class="panel panel-left"></div>
+  <div class="panel panel-right"></div>
+
+  <!-- Efectos encima de los paneles -->
+  <div class="bg-radial"></div>
+  <div class="particles" id="particles"></div>
+
+  <!-- Borde del agujero -->
+  <div class="hole-border"></div>
+
+  <script>
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 60; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `
+        left: ${Math.random() * 100}%;
+        top: ${20 + Math.random() * 80}%;
+        animation-duration: ${3 + Math.random() * 5}s;
+        animation-delay: ${Math.random() * 8}s;
+        width: ${1 + Math.random() * 3}px;
+        height: ${1 + Math.random() * 3}px;
+      `;
+      container.appendChild(p);
+    }
+  </script>
+
+</body>
+</html>

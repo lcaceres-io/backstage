@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>Footer Redes — Barceló</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: rgb(0, 255, 0);
+    width: 100vw; height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Raleway', sans-serif;
+    overflow: hidden;
+  }
+
+  .footer {
+    width: 1373px;
+    height: 141px;
+    background: linear-gradient(100deg, #EDF3FA 0%, #F7FAFD 30%, #F7FAFD 70%, #E4EDF7 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Patrón hexagonal tipo balón de fútbol, igual que en la trivia */
+  .footer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(60deg, rgba(0,76,151,0.06) 0px, rgba(0,76,151,0.06) 1px, transparent 1px, transparent 26px),
+      repeating-linear-gradient(-60deg, rgba(0,76,151,0.06) 0px, rgba(0,76,151,0.06) 1px, transparent 1px, transparent 26px),
+      repeating-linear-gradient(0deg, rgba(0,76,151,0.04) 0px, rgba(0,76,151,0.04) 1px, transparent 1px, transparent 26px);
+    pointer-events: none;
+  }
+
+  /* Glow radial izquierda */
+  .glow-left {
+    position: absolute;
+    top: 50%; left: -120px;
+    width: 320px; height: 320px;
+    transform: translateY(-50%);
+    background: radial-gradient(ellipse, rgba(0,76,151,0.16) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Glow radial derecha */
+  .glow-right {
+    position: absolute;
+    top: 50%; right: -120px;
+    width: 320px; height: 320px;
+    transform: translateY(-50%);
+    background: radial-gradient(ellipse, rgba(26,107,191,0.14) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Bloque angulado superior izquierdo */
+  .shape-1 {
+    position: absolute;
+    top: -90px; left: -40px;
+    width: 200px; height: 200px;
+    background: linear-gradient(135deg, rgba(0,76,151,0.10), transparent);
+    transform: rotate(20deg);
+    pointer-events: none;
+  }
+
+  /* Bloque angulado inferior derecho */
+  .shape-2 {
+    position: absolute;
+    bottom: -100px; right: -40px;
+    width: 220px; height: 220px;
+    background: linear-gradient(-45deg, rgba(0,76,151,0.10), transparent);
+    transform: rotate(-15deg);
+    pointer-events: none;
+  }
+
+  /* Líneas de velocidad horizontales sutiles */
+  .speed-line {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .speed-line::before {
+    content: '';
+    position: absolute;
+    top: 22%; left: -10%;
+    width: 120%; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,76,151,0.18), transparent);
+    transform: rotate(-3deg);
+  }
+  .speed-line::after {
+    content: '';
+    position: absolute;
+    top: 78%; left: -10%;
+    width: 120%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(26,107,191,0.14), transparent);
+    transform: rotate(-3deg);
+  }
+
+  /* Franja de acento superior */
+  .accent-top {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 4px;
+    background: linear-gradient(90deg, #004C97, #1A6BBF);
+  }
+
+  .social-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .social-item img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+  }
+
+  .social-item .handle {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0A1628;
+    letter-spacing: 0.01em;
+  }
+
+  .divider {
+    width: 1px;
+    height: 44px;
+    background: rgba(0,76,151,0.18);
+    position: relative;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="footer">
+  <div class="accent-top"></div>
+  <div class="shape-1"></div>
+  <div class="shape-2"></div>
+  <div class="glow-left"></div>
+  <div class="glow-right"></div>
+  <div class="speed-line"></div>
+
+
+  <div class="social-item">
+    <img src="https://barcelo.edu.ar/assets/imgs/iconos/instagram.svg" alt="Instagram">
+    <span class="handle">@fundbarcelo</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="social-item">
+    <img src="https://barcelo.edu.ar/assets/imgs/iconos/twitter.svg" alt="Twitter / X">
+    <span class="handle">@Fundbarcelo</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="social-item">
+    <img src="https://barcelo.edu.ar/assets/imgs/iconos/facebook.svg" alt="Facebook">
+    <span class="handle">fundacionbarcelo</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="social-item">
+    <img src="https://barcelo.edu.ar/assets/imgs/iconos/linkedin.svg" alt="LinkedIn">
+    <span class="handle">fundacionbarcelo</span>
+  </div>
+
+</div>
+
+</body>
+</html>

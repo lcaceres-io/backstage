@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Backstage — Barceló</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0f1115;
+    color: #f1f1f1;
+    min-height: 100vh;
+    padding: 40px 24px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 24px; margin-bottom: 4px; }
+  p.sub { color: #9aa0aa; font-size: 14px; margin-bottom: 32px; }
+  h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #9aa0aa;
+    margin: 28px 0 10px;
+  }
+  ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  li a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #171a21;
+    border: 1px solid #2a2f3a;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #f1f1f1;
+    text-decoration: none;
+    font-size: 14px;
+    transition: border-color 0.15s;
+  }
+  li a:hover { border-color: #4c8bf5; }
+  li a span.tag {
+    font-size: 11px;
+    color: #9aa0aa;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Backstage</h1>
+    <p class="sub">Artefactos web para OBS — Fundación Barceló</p>
+
+    <h2>Lower Third</h2>
+    <ul>
+      <li><a href="/lower-third/control">Control <span class="tag">panel</span></a></li>
+      <li><a href="/lower-third/overlay">Overlay <span class="tag">fuente OBS</span></a></li>
+    </ul>
+
+    <h2>Layouts</h2>
+    <ul>
+      <li><a href="/layouts/fondo-particulas.html">Fondo Partículas</a></li>
+      <li><a href="/layouts/footer.html">Footer</a></li>
+      <li><a href="/layouts/footer-dark.html">Footer Dark</a></li>
+      <li><a href="/layouts/dos-participantes.html">Dos Participantes</a></li>
+      <li><a href="/layouts/dos-participantes-marco.html">Dos Participantes (Marco)</a></li>
+      <li><a href="/layouts/tres-participantes.html">Tres Participantes</a></li>
+      <li><a href="/layouts/cuatro-participantes.html">Cuatro Participantes</a></li>
+      <li><a href="/layouts/compartir-pantalla-izq.html">Compartir Pantalla Izq</a></li>
+      <li><a href="/layouts/camara-info.html">Cámara + Info</a></li>
+      <li><a href="/layouts/logo-solo-dark.html">Logo Solo Dark</a></li>
+      <li><a href="/layouts/trivia.html">Trivia</a></li>
+      <li><a href="/layouts/trivia-dark.html">Trivia Dark</a></li>
+    </ul>
+  </div>
+</body>
+</html>

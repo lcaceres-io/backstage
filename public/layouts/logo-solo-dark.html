@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>Bloque Logo — Barceló Dark</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: rgb(0, 255, 0);
+    width: 100vw; height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Raleway', sans-serif;
+    overflow: hidden;
+  }
+
+  .logo-block {
+    width: 361px;
+    height: 141px;
+    background: linear-gradient(100deg, #142238 0%, #1B2D47 30%, #1B2D47 70%, #11203A 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Patrón hexagonal sobre fondo oscuro */
+  .logo-block::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(60deg, rgba(58,143,216,0.07) 0px, rgba(58,143,216,0.07) 1px, transparent 1px, transparent 26px),
+      repeating-linear-gradient(-60deg, rgba(58,143,216,0.07) 0px, rgba(58,143,216,0.07) 1px, transparent 1px, transparent 26px),
+      repeating-linear-gradient(0deg, rgba(58,143,216,0.04) 0px, rgba(58,143,216,0.04) 1px, transparent 1px, transparent 26px);
+    pointer-events: none;
+  }
+
+  /* Glow radial central */
+  .glow-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 300px; height: 200px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse, rgba(26,107,191,0.30) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Bloques angulados */
+  .shape-1 {
+    position: absolute;
+    top: -70px; right: -50px;
+    width: 160px; height: 160px;
+    background: linear-gradient(135deg, rgba(26,107,191,0.18), transparent);
+    transform: rotate(20deg);
+    pointer-events: none;
+  }
+
+  .shape-2 {
+    position: absolute;
+    bottom: -70px; left: -50px;
+    width: 160px; height: 160px;
+    background: linear-gradient(-45deg, rgba(58,143,216,0.18), transparent);
+    transform: rotate(-15deg);
+    pointer-events: none;
+  }
+
+  .logo-wrap {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  /* Logo Barceló invertido a blanco para contrastar sobre fondo oscuro */
+  .logo-wrap img.fl-barcelo {
+    width: 220px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.95;
+  }
+
+  .logo-wrap .footer-divider {
+    width: 1px;
+    height: 60px;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .logo-wrap img.fl-fifa {
+    width: 200px;
+    object-fit: contain;
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-block">
+  <div class="shape-1"></div>
+  <div class="shape-2"></div>
+  <div class="glow-center"></div>
+
+  <div class="logo-wrap">
+
+    <!-- OPCIÓN A: Solo logo Barceló (activa)
+    <img class="fl-barcelo" src="/layouts/assets/logo-barcelo.png" alt="Fundación Barceló">
+	-->
+
+    <!-- OPCIÓN B: Barceló + FIFA World Cup 2026 (comentada)
+    <img class="fl-barcelo" src="/layouts/assets/logo-barcelo.png" alt="Fundación Barceló" style="width:160px">
+    <div class="footer-divider"></div>
+    <img class="fl-fifa" src="https://logoheritage.com/wp-content/uploads/2025/12/World-Cup-2026-Logo-PNG-300x169.png" alt="FIFA World Cup 2026">
+    -->
+     <!-- OPCIÓN C: Solo FIFA World Cup 2026 (comentada) -->    
+     <img class="fl-fifa" src="https://logoheritage.com/wp-content/uploads/2025/12/World-Cup-2026-Logo-PNG-300x169.png" alt="FIFA World Cup 2026" height=2000;>
+
+  </div>
+</div>
+
+</body>
+</html>

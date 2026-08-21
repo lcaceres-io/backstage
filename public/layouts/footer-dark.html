@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<title>Footer Redes — Barceló Dark</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: rgb(0, 255, 0);
+    width: 100vw; height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Raleway', sans-serif;
+    overflow: hidden;
+  }
+
+  .footer {
+    width: 1373px;
+    height: 141px;
+    background: linear-gradient(100deg, #142238 0%, #1B2D47 30%, #1B2D47 70%, #11203A 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Patrón hexagonal tipo balón de fútbol, sobre fondo oscuro */
+  .footer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(60deg, rgba(58,143,216,0.07) 0px, rgba(58,143,216,0.07) 1px, transparent 1px, transparent 26px),
+      repeating-linear-gradient(-60deg, rgba(58,143,216,0.07) 0px, rgba(58,143,216,0.07) 1px, transparent 1px, transparent 26px),
+      repeating-linear-gradient(0deg, rgba(58,143,216,0.04) 0px, rgba(58,143,216,0.04) 1px, transparent 1px, transparent 26px);
+    pointer-events: none;
+  }
+
+  /* Glow radial izquierda */
+  .glow-left {
+    position: absolute;
+    top: 50%; left: -120px;
+    width: 320px; height: 320px;
+    transform: translateY(-50%);
+    background: radial-gradient(ellipse, rgba(26,107,191,0.30) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Glow radial derecha */
+  .glow-right {
+    position: absolute;
+    top: 50%; right: -120px;
+    width: 320px; height: 320px;
+    transform: translateY(-50%);
+    background: radial-gradient(ellipse, rgba(58,143,216,0.24) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Bloque angulado superior izquierdo */
+  .shape-1 {
+    position: absolute;
+    top: -90px; left: -40px;
+    width: 200px; height: 200px;
+    background: linear-gradient(135deg, rgba(26,107,191,0.18), transparent);
+    transform: rotate(20deg);
+    pointer-events: none;
+  }
+
+  /* Bloque angulado inferior derecho */
+  .shape-2 {
+    position: absolute;
+    bottom: -100px; right: -40px;
+    width: 220px; height: 220px;
+    background: linear-gradient(-45deg, rgba(26,107,191,0.18), transparent);
+    transform: rotate(-15deg);
+    pointer-events: none;
+  }
+
+  /* Líneas de velocidad horizontales */
+  .speed-line {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .speed-line::before {
+    content: '';
+    position: absolute;
+    top: 22%; left: -10%;
+    width: 120%; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(58,143,216,0.30), transparent);
+    transform: rotate(-3deg);
+  }
+  .speed-line::after {
+    content: '';
+    position: absolute;
+    top: 78%; left: -10%;
+    width: 120%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(26,107,191,0.24), transparent);
+    transform: rotate(-3deg);
+  }
+
+  .social-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .social-item i {
+    font-size: 36px;
+    color: #ffffff;
+    opacity: 0.92;
+    line-height: 1;
+  }
+
+  .social-item .handle {
+    font-size: 22px;
+    font-weight: 700;
+    color: #E4EDF7;
+    letter-spacing: 0.01em;
+  }
+
+  .divider {
+    width: 1px;
+    height: 44px;
+    background: rgba(255,255,255,0.15);
+    position: relative;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="footer">
+  <div class="shape-1"></div>
+  <div class="shape-2"></div>
+  <div class="glow-left"></div>
+  <div class="glow-right"></div>
+  <div class="speed-line"></div>
+
+  <div class="social-item">
+    <i class="bi bi-instagram"></i>
+    <span class="handle">@fundbarcelo</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="social-item">
+    <i class="bi bi-twitter-x"></i>
+    <span class="handle">@Fundbarcelo</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="social-item">
+    <i class="bi bi-facebook"></i>
+    <span class="handle">fundacionbarcelo</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="social-item">
+    <i class="bi bi-linkedin"></i>
+    <span class="handle">fundacionbarcelo</span>
+  </div>
+
+</div>
+
+</body>
+</html>
