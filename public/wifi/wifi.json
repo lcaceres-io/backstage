@@ -1,0 +1,8 @@
+{
+  "ssid": "NOMBRE-DE-RED",
+  "password": "CLAVE",
+  "security": "WPA",
+  "hidden": false,
+  "segundosPorSlide": 12,
+  "tema": "claro"
+}

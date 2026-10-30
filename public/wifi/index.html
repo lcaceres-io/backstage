@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WiFi — Fundación Barceló</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/layouts/assets/marca-fondo.css">
+<style>
+  /* WiFi — Manual de marca Fundación Barceló 2026.
+     Dos slides que rotan solos: 1) red y clave en texto, 2) QR para conectarse.
+     La red y la clave se leen de wifi.json: al cambiar la clave, el QR se regenera solo.
+     Parametros por URL (opcionales, pisan wifi.json):
+       ?ssid=Red  ?clave=Clave  ?seg=12 (segundos por slide)  ?solo=texto | qr (fija un slide)
+       ?tema=claro | oscuro  (por defecto claro; tambien se puede fijar con "tema" en wifi.json) */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --azul:#0061F0; --marino:#06038D; --cian:#00D1FF; }
+
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #06038D; }
+  body { font-family: 'Sofia Pro', 'Montserrat', sans-serif; color: #fff; }
+
+  /* Escenario fijo 1920x1080 que se escala para llenar cualquier pantalla */
+  #stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; overflow: hidden; }
+
+  .logo { position: absolute; left: 90px; top: 70px; width: 230px; height: 79px; z-index: 5;
+          background: var(--logo, #fff);
+          -webkit-mask: url(/layouts/assets/logo-fundacion-blanco.png) left center / contain no-repeat;
+                  mask: url(/layouts/assets/logo-fundacion-blanco.png) left center / contain no-repeat; }
+
+  .slide { position: absolute; inset: 0; z-index: 2; opacity: 0; visibility: hidden;
+           transition: opacity .6s ease, visibility 0s linear .6s; }
+  .slide.active { opacity: 1; visibility: visible; transition: opacity .6s ease; }
+
+  /* Entrada escalonada de cada elemento cuando el slide se activa */
+  .slide .item { opacity: 0; }
+  .slide.active .item { animation: sube .9s cubic-bezier(.22,1,.36,1) both; animation-delay: calc(var(--i, 0) * .14s + .15s); }
+  @keyframes sube { from { opacity: 0; transform: translateY(36px); } to { opacity: 1; transform: none; } }
+
+  .eyebrow { font-size: 30px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--cian); }
+  h1 { font-size: 118px; line-height: 1.02; font-weight: 800; letter-spacing: -.02em; }
+  .sub { font-size: 40px; font-weight: 600; color: rgba(255,255,255,.88); }
+
+  /* ---------- Slide 1: red y clave ---------- */
+  .s-texto .col { position: absolute; left: 170px; top: 215px; width: 1150px; }
+  .s-texto h1 { margin: 18px 0 16px; }
+  .s-texto .sub { margin-bottom: 52px; }
+  .dato { background: #fff; color: var(--marino); border-radius: 30px; padding: 0 48px; height: 170px; margin-bottom: 26px;
+          display: flex; align-items: center; gap: 44px;
+          box-shadow: 0 22px 50px rgba(2,0,70,.35), 0 0 0 1px rgba(255,255,255,.4); }
+  .dato .rotulo { flex: 0 0 190px; font-size: 30px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--azul); }
+  .dato .valor { flex: 1; min-width: 0; font-size: 92px; font-weight: 800; letter-spacing: -.01em; white-space: nowrap; line-height: 1.1; }
+  .dato.clave .valor { letter-spacing: .02em; }
+  .s-texto .nota { margin-top: 30px; font-size: 32px; font-weight: 600; color: rgba(255,255,255,.8); }
+
+  /* Icono WiFi animado */
+  .wifi { position: absolute; left: 1380px; top: 290px; width: 420px; height: 420px; }
+  .wifi path, .wifi circle { fill: none; stroke: #fff; stroke-width: 26; stroke-linecap: round; }
+  .wifi circle { fill: #fff; stroke: none; }
+  .wifi .a1, .wifi .a2, .wifi .a3 { opacity: .22; animation: onda 2.4s ease-in-out infinite; }
+  .wifi .a2 { animation-delay: .25s; } .wifi .a3 { animation-delay: .5s; }
+  .wifi .punto { animation: punto 2.4s ease-in-out infinite; transform-origin: 210px 340px; }
+  @keyframes onda { 0%, 100% { opacity: .22; } 35%, 55% { opacity: 1; } }
+  @keyframes punto { 0%, 100% { transform: scale(1); } 20% { transform: scale(1.18); } }
+  .wifi-halo { position: absolute; left: 1290px; top: 200px; width: 600px; height: 600px; border-radius: 50%;
+               background: radial-gradient(closest-side, rgba(0,209,255,.38), rgba(0,209,255,0)); animation: respira 6s ease-in-out infinite alternate; }
+  @keyframes respira { from { transform: scale(.9); } to { transform: scale(1.12); } }
+
+  /* ---------- Slide 2: QR ---------- */
+  .s-qr .col { position: absolute; left: 170px; top: 235px; width: 900px; }
+  .s-qr h1 { margin: 18px 0 20px; }
+  .s-qr .sub { margin-bottom: 54px; }
+  .pasos { list-style: none; }
+  .pasos li { display: flex; align-items: center; gap: 28px; font-size: 40px; font-weight: 700; margin-bottom: 30px; }
+  .pasos .n { flex: 0 0 74px; height: 74px; border-radius: 22px; background: var(--cian); color: var(--marino);
+              font-size: 40px; font-weight: 800; display: grid; place-items: center; }
+  .s-qr .red { margin-top: 44px; font-size: 34px; font-weight: 600; color: rgba(255,255,255,.85); }
+  .s-qr .red b { font-weight: 800; color: #fff; }
+
+  .qr-card { position: absolute; left: 1170px; top: 190px; width: 640px; height: 640px; border-radius: 44px; background: #fff;
+             box-shadow: 0 30px 70px rgba(2,0,70,.45), 0 0 0 1px rgba(255,255,255,.5); overflow: hidden; padding: 26px; }
+  .qr-card svg { width: 100%; height: 100%; display: block; }
+  .scan { position: absolute; left: 0; right: 0; top: 0; height: 120px; pointer-events: none;
+          background: linear-gradient(180deg, rgba(0,209,255,0), rgba(0,209,255,.16) 70%, rgba(0,209,255,0));
+          border-bottom: 3px solid rgba(0,209,255,.55); animation: barre 3.6s ease-in-out infinite; }
+  @keyframes barre { 0% { transform: translateY(-120px); } 100% { transform: translateY(640px); } }
+  .esquina { position: absolute; width: 74px; height: 74px; border: 8px solid var(--azul); }
+  .esquina.tl { left: 14px; top: 14px; border-right: 0; border-bottom: 0; border-top-left-radius: 26px; }
+  .esquina.tr { right: 14px; top: 14px; border-left: 0; border-bottom: 0; border-top-right-radius: 26px; }
+  .esquina.bl { left: 14px; bottom: 14px; border-right: 0; border-top: 0; border-bottom-left-radius: 26px; }
+  .esquina.br { right: 14px; bottom: 14px; border-left: 0; border-top: 0; border-bottom-right-radius: 26px; }
+  .qr-error { position: absolute; inset: 0; display: none; place-items: center; text-align: center; padding: 40px;
+              font-size: 34px; font-weight: 700; color: var(--marino); }
+
+  /* ---------- Progreso ---------- */
+  .puntos { position: absolute; left: 170px; bottom: 62px; display: flex; gap: 12px; z-index: 5; }
+  .puntos i { width: 14px; height: 14px; border-radius: 7px; background: rgba(255,255,255,.35); transition: width .4s, background .4s; }
+  .puntos i.on { width: 48px; background: var(--cian); }
+  .progreso { position: absolute; left: 0; right: 0; bottom: 0; height: 8px; background: rgba(255,255,255,.12); z-index: 5; }
+  .progreso i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--azul), var(--cian)); }
+  @keyframes llena { from { width: 0; } to { width: 100%; } }
+
+  /* ---------- Tema claro: mas sutil, fondo casi blanco con acentos de marca ---------- */
+  .claro, .claro body { background: #F4F7FE; }
+  .claro .marca-bg { background: linear-gradient(145deg, #FFFFFF 0%, #F1F6FF 55%, #E6EFFF 100%); }
+  .claro .marca-bg .m-luz1 { background: radial-gradient(closest-side, rgba(0,209,255,.20), rgba(0,209,255,0)); }
+  .claro .marca-bg .m-luz2 { background: radial-gradient(closest-side, rgba(0,97,240,.12), rgba(0,97,240,0)); }
+  .claro .marca-bg .m-part { background: #0061F0; }
+  .claro .marca-bg .m-part.cian { background: #00B7E6; }
+  .claro .marca-bg .m-part.glow { box-shadow: 0 0 7px 2px rgba(0,97,240,.25); }
+  .claro { --logo: #0061F0; }
+  .claro .eyebrow { color: var(--azul); }
+  .claro h1 { color: var(--marino); }
+  .claro .sub, .claro .s-texto .nota, .claro .s-qr .red { color: #4A5680; }
+  .claro .s-qr .red b { color: var(--marino); }
+  .claro .dato { background: #fff; box-shadow: 0 16px 38px rgba(6,3,141,.09), 0 0 0 1px rgba(6,3,141,.07); }
+  .claro .dato .valor { font-weight: 700; }
+  .claro .wifi path { stroke: var(--azul); }
+  .claro .wifi circle { fill: var(--azul); }
+  .claro .wifi-halo { background: radial-gradient(closest-side, rgba(0,209,255,.22), rgba(0,209,255,0)); }
+  .claro .pasos li { color: var(--marino); }
+  .claro .pasos .n { background: #D9F4FF; color: var(--marino); }
+  .claro .qr-card { box-shadow: 0 22px 54px rgba(6,3,141,.14), 0 0 0 1px rgba(6,3,141,.08); }
+  .claro .scan { background: linear-gradient(180deg, rgba(0,209,255,0), rgba(0,209,255,.12) 70%, rgba(0,209,255,0)); border-bottom-color: rgba(0,209,255,.5); }
+  .claro .puntos i { background: rgba(6,3,141,.16); }
+  .claro .puntos i.on { background: var(--azul); }
+  .claro .progreso { background: rgba(6,3,141,.07); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="marca-bg"><i class="m-luz m-luz1"></i><i class="m-luz m-luz2"></i></div>
+  <div class="logo" role="img" aria-label="Fundación Barceló"></div>
+
+  <!-- Slide 1: red y clave -->
+  <section class="slide s-texto" id="sTexto">
+    <div class="wifi-halo"></div>
+    <svg class="wifi item" style="--i:2" viewBox="0 0 420 420" aria-hidden="true">
+      <path class="a3" d="M30 160 A250 250 0 0 1 390 160"/>
+      <path class="a2" d="M85 222 A170 170 0 0 1 335 222"/>
+      <path class="a1" d="M140 282 A90 90 0 0 1 280 282"/>
+      <circle class="punto" cx="210" cy="340" r="26"/>
+    </svg>
+    <div class="col">
+      <div class="eyebrow item" style="--i:0">WiFi</div>
+      <h1 class="item" style="--i:1">Conectate<br>a nuestra red</h1>
+      <div class="sub item" style="--i:2">Usá estos datos desde tu celular o tu notebook</div>
+      <div class="dato item" style="--i:3"><div class="rotulo">Red</div><div class="valor" id="vRed"></div></div>
+      <div class="dato clave item" style="--i:4"><div class="rotulo">Clave</div><div class="valor" id="vClave"></div></div>
+      <div class="nota item" style="--i:5" id="nota">También podés escanear el código QR</div>
+    </div>
+  </section>
+
+  <!-- Slide 2: QR -->
+  <section class="slide s-qr" id="sQr">
+    <div class="col">
+      <div class="eyebrow item" style="--i:0">WiFi</div>
+      <h1 class="item" style="--i:1">Escaneá<br>y conectate</h1>
+      <div class="sub item" style="--i:2">Sin escribir la clave</div>
+      <ol class="pasos">
+        <li class="item" style="--i:3"><span class="n">1</span>Abrí la cámara del celular</li>
+        <li class="item" style="--i:4"><span class="n">2</span>Apuntá al código</li>
+        <li class="item" style="--i:5"><span class="n">3</span>Tocá «Conectar»</li>
+      </ol>
+      <div class="red item" style="--i:6">Red: <b id="vRed2"></b></div>
+    </div>
+    <div class="qr-card item" style="--i:2">
+      <div id="qr"></div>
+      <div class="qr-error" id="qrError"></div>
+      <div class="scan"></div>
+      <i class="esquina tl"></i><i class="esquina tr"></i><i class="esquina bl"></i><i class="esquina br"></i>
+    </div>
+  </section>
+
+  <div class="puntos" id="puntos"><i></i><i></i></div>
+  <div class="progreso"><i id="barra"></i></div>
+</div>
+
+<script src="/layouts/assets/marca-fondo.js"></script>
+<script src="qr.js"></script>
+<script>
+(function () {
+  // Valores por defecto: se reemplazan por wifi.json y, encima, por los parametros de la URL.
+  var BASE = { ssid: 'NOMBRE-DE-RED', password: 'CLAVE', security: 'WPA', hidden: false, segundosPorSlide: 12, tema: 'claro' };
+  var params = new URLSearchParams(location.search);
+  var $ = function (id) { return document.getElementById(id); };
+  function tema(t) { document.documentElement.classList.toggle('claro', t !== 'oscuro'); }
+  tema(params.get('tema'));
+
+  // ---- escala el escenario a la pantalla ----
+  var stage = $('stage');
+  function escalar() {
+    var s = Math.min(innerWidth / 1920, innerHeight / 1080);
+    stage.style.transform = 'translate(' + (innerWidth - 1920 * s) / 2 + 'px,' + (innerHeight - 1080 * s) / 2 + 'px) scale(' + s + ')';
+  }
+  addEventListener('resize', escalar); escalar();
+
+  // ---- texto que no entra: achica la fuente hasta que quepa ----
+  function ajustar(el) {
+    el.style.fontSize = ''; el.style.whiteSpace = ''; el.style.wordBreak = ''; el.style.lineHeight = '';
+    var px = parseFloat(getComputedStyle(el).fontSize);
+    while (el.scrollWidth > el.clientWidth && px > 44) { px -= 2; el.style.fontSize = px + 'px'; }
+    if (el.scrollWidth > el.clientWidth) {   // muy largo: baja a dos lineas en vez de seguir achicando
+      el.style.whiteSpace = 'normal'; el.style.wordBreak = 'break-all'; el.style.lineHeight = '1.08';
+      el.style.fontSize = '46px';
+    }
+  }
+
+  // ---- cadena WIFI: del estandar que leen las camaras de iOS y Android ----
+  function esc(t) { return String(t).replace(/([\\;,:"])/g, '\\$1'); }
+  function cadenaWifi(c) {
+    var t = c.security === 'nopass' ? 'nopass' : (c.security === 'WEP' ? 'WEP' : 'WPA');
+    var s = 'WIFI:T:' + t + ';S:' + esc(c.ssid) + ';';
+    if (t !== 'nopass') s += 'P:' + esc(c.password) + ';';
+    if (c.hidden) s += 'H:true;';
+    return s + ';';
+  }
+
+  function dibujarQr(texto) {
+    var box = $('qr'), err = $('qrError');
+    try {
+      var q = BarceloQR.encode(texto, 'M'), n = q.size, z = 4, d = '';
+      for (var y = 0; y < n; y++) {
+        for (var x = 0; x < n; x++) {
+          if (!q.modules[y][x]) continue;
+          var ini = x; while (x + 1 < n && q.modules[y][x + 1]) x++;
+          d += 'M' + (ini + z) + ' ' + (y + z) + 'h' + (x - ini + 1) + 'v1h-' + (x - ini + 1) + 'z';
+        }
+      }
+      var T = n + z * 2;
+      box.innerHTML = '<svg viewBox="0 0 ' + T + ' ' + T + '" shape-rendering="crispEdges" role="img" aria-label="Código QR para conectarse al WiFi">' +
+        '<rect width="' + T + '" height="' + T + '" fill="#fff"/><path d="' + d + '" fill="#06038D"/></svg>';
+      err.style.display = 'none';
+    } catch (e) {
+      box.innerHTML = '';
+      err.textContent = 'La red o la clave son demasiado largas para generar el código QR.';
+      err.style.display = 'grid';
+    }
+  }
+
+  // ---- aplica la configuracion a la pagina ----
+  var actual = '';
+  function aplicar(cfg) {
+    var c = Object.assign({}, BASE, cfg || {});
+    if (params.get('ssid')) c.ssid = params.get('ssid');
+    if (params.get('clave')) c.password = params.get('clave');
+    if (params.get('seg')) c.segundosPorSlide = parseFloat(params.get('seg'));
+    tema(params.get('tema') || c.tema);
+    var firma = JSON.stringify(c);
+    if (firma === actual) return;       // sin cambios: no toca nada
+    actual = firma;
+    $('vRed').textContent = c.ssid;
+    $('vRed2').textContent = c.ssid;
+    $('vClave').textContent = c.security === 'nopass' ? 'Sin clave' : c.password;
+    $('nota').style.display = '';
+    ajustar($('vRed')); ajustar($('vClave'));
+    dibujarQr(cadenaWifi(c));
+    SEG = Math.max(4, c.segundosPorSlide || 12);
+  }
+
+  var SEG = BASE.segundosPorSlide;
+  function leerConfig() {
+    return fetch('wifi.json?t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+  }
+
+  // ---- rotacion de slides ----
+  var slides = [$('sTexto'), $('sQr')], puntos = $('puntos').children, barra = $('barra');
+  var solo = params.get('solo'), idx = solo === 'qr' ? 1 : 0, timer = null;
+  function mostrar(i) {
+    idx = (i + slides.length) % slides.length;
+    slides.forEach(function (s, k) { s.classList.toggle('active', k === idx); });
+    for (var k = 0; k < puntos.length; k++) puntos[k].classList.toggle('on', k === idx);
+    clearTimeout(timer);
+    barra.style.animation = 'none'; void barra.offsetWidth;
+    if (!solo) {
+      barra.style.animation = 'llena ' + SEG + 's linear forwards';
+      timer = setTimeout(function () { mostrar(idx + 1); }, SEG * 1000);
+    }
+  }
+  if (solo) { $('puntos').style.display = 'none'; document.querySelector('.progreso').style.display = 'none'; }
+  addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') mostrar(idx + 1);
+    else if (e.key === 'ArrowLeft') mostrar(idx - 1);
+  });
+
+  // ---- arranque: lee wifi.json y lo vuelve a leer cada 30 s (cambia la clave y el QR se regenera solo) ----
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(function () {
+    return leerConfig();
+  }).then(function (cfg) {
+    aplicar(cfg);
+    mostrar(idx);
+    setInterval(function () { leerConfig().then(function (c) { if (c) aplicar(c); }); }, 30000);
+  });
+})();
+</script>
+</body>
+</html>
