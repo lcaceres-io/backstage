@@ -4,6 +4,7 @@
   "security": "WPA",
   "hidden": false,
   "segundosPorSlide": 12,
+  "segundosPorRed": 2.8,
   "slides": ["texto", "qr", "redes", "silencio"],
   "redes": [
     { "nombre": "Instagram", "usuario": "@fundbarcelo",      "icono": "instagram" },

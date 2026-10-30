@@ -89,19 +89,20 @@
   .qr-error { position: absolute; inset: 0; display: none; place-items: center; text-align: center; padding: 40px;
               font-size: 28px; font-weight: 700; color: var(--marino); }
 
-  /* ---------- Slide 3: redes (sin tarjeta: iconos grandes sobre el azul) ---------- */
-  .grid-redes { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 56px 40px; }
-  .red-item { display: flex; flex-direction: column; align-items: stretch; gap: 18px; opacity: 0; }
-  .slide.active .red-item { animation: pop .75s cubic-bezier(.34,1.56,.64,1) both; animation-delay: calc(.35s + var(--k) * .13s); }
-  @keyframes pop { from { opacity: 0; transform: translateY(24px) scale(.6); } to { opacity: 1; transform: none; } }
-  .red-tile { align-self: flex-start; width: 116px; height: 116px; border-radius: 32px; background: #fff; position: relative;
-              box-shadow: 0 1px 2px rgba(2,0,70,.12), 0 12px 26px rgba(2,0,70,.20);
-              animation: flota 4.2s ease-in-out infinite; animation-delay: calc(var(--k) * -1.1s); }
-  @keyframes flota { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
-  .red-tile i { position: absolute; left: 50%; top: 50%; width: 54px; height: 54px; margin: -27px 0 0 -27px; background: var(--azul);
-                -webkit-mask: center / contain no-repeat; mask: center / contain no-repeat; }
-  .red-nombre { font-size: 20px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--cian); }
-  .red-usuario { display: block; font-size: 36px; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; line-height: 1.1; margin-top: -8px; }
+  /* ---------- Slide 3: redes, de a una (como en el zocalo del Canva) ---------- */
+  .redes-escena { width: 100%; }
+  .rs-cuerpo { transition: opacity .35s ease, transform .35s ease; }
+  .rs-cuerpo.sale { opacity: 0; transform: translateY(-22px); }
+  .rs-ico { width: 150px; height: 150px; background: #fff; margin-bottom: 30px;
+            -webkit-mask: center / contain no-repeat; mask: center / contain no-repeat;
+            transition: transform .55s cubic-bezier(.34,1.56,.64,1); }
+  .rs-cuerpo.sale .rs-ico { transform: scale(.55) rotate(-24deg); }
+  .rs-nombre { font-size: 22px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--cian); margin-bottom: 12px; }
+  .rs-usuario { display: block; font-size: 68px; font-weight: 700; letter-spacing: -.02em; white-space: nowrap; line-height: 1.08; }
+  .rs-mini { display: flex; gap: 26px; margin-top: 52px; }
+  .rs-mini i { width: 34px; height: 34px; background: #fff; opacity: .32; transition: opacity .3s, transform .3s;
+               -webkit-mask: center / contain no-repeat; mask: center / contain no-repeat; }
+  .rs-mini i.on { opacity: 1; transform: scale(1.18); }
 
   /* ---------- Slide 4: silencio (celular dormido) ---------- */
   .tel-wrap { width: 440px; height: 580px; position: relative; }
@@ -182,7 +183,16 @@
       <h1 class="item" style="--i:1">Seguinos en<br>nuestras redes</h1>
       <div class="sub item" style="--i:2">¡Etiquetanos! Queremos enterarnos de tus logros</div>
     </div>
-    <div class="right"><div class="grid-redes" id="listaRedes"></div></div>
+    <div class="right">
+      <div class="redes-escena item" style="--i:2">
+        <div class="rs-cuerpo" id="rsCuerpo">
+          <div class="rs-ico" id="rsIco"></div>
+          <div class="rs-nombre" id="rsNombre"></div>
+          <span class="rs-usuario" id="rsUsuario"></span>
+        </div>
+        <div class="rs-mini" id="rsMini"></div>
+      </div>
+    </div>
   </section>
 
   <!-- 4: Silencio de celulares -->
@@ -287,23 +297,39 @@
     }
   }
 
+  // Redes de a una: cuando el slide esta activo, pasa por cada red (ver mostrar())
+  var REDES = [], redIdx = 0, redTimer = null;
+  function iconoUrl(r) { return 'url(img/' + String(r.icono || 'instagram').replace(/[^a-z0-9_-]/gi, '') + '.svg)'; }
+  function ponerRed(k) {
+    var r = REDES[k]; if (!r) return;
+    redIdx = k;
+    var ico = $('rsIco'); ico.style.webkitMaskImage = ico.style.maskImage = iconoUrl(r);
+    $('rsNombre').textContent = r.nombre || '';
+    var u = $('rsUsuario'); u.textContent = r.usuario || ''; ajustar(u);
+    var mini = $('rsMini').children;
+    for (var m = 0; m < mini.length; m++) mini[m].classList.toggle('on', m === k);
+  }
   function dibujarRedes(redes) {
-    var cont = $('listaRedes'); cont.innerHTML = '';
-    (redes || []).slice(0, 4).forEach(function (r, k) {
-      var it = document.createElement('div'); it.className = 'red-item'; it.style.setProperty('--k', k);
-      var tile = document.createElement('div'); tile.className = 'red-tile';
-      var i = document.createElement('i');
-      i.style.webkitMaskImage = i.style.maskImage = 'url(img/' + String(r.icono || 'instagram').replace(/[^a-z0-9_-]/gi, '') + '.svg)';
-      tile.appendChild(i);
-      var n = document.createElement('div'); n.className = 'red-nombre'; n.textContent = r.nombre || '';
-      var u = document.createElement('span'); u.className = 'red-usuario'; u.textContent = r.usuario || '';
-      it.appendChild(tile); it.appendChild(n); it.appendChild(u); cont.appendChild(it);
+    REDES = (redes || []).slice(0, 6);
+    var mini = $('rsMini'); mini.innerHTML = '';
+    REDES.forEach(function (r) {
+      var i = document.createElement('i'); i.style.webkitMaskImage = i.style.maskImage = iconoUrl(r); mini.appendChild(i);
     });
-    Array.prototype.forEach.call(cont.querySelectorAll('.red-usuario'), ajustar);
+    ponerRed(0);
+  }
+  function detenerRedes() { clearInterval(redTimer); redTimer = null; }
+  function iniciarRedes() {
+    detenerRedes(); ponerRed(0);
+    if (REDES.length < 2) return;
+    redTimer = setInterval(function () {
+      var cuerpo = $('rsCuerpo');
+      cuerpo.classList.add('sale');
+      setTimeout(function () { ponerRed((redIdx + 1) % REDES.length); cuerpo.classList.remove('sale'); }, 380);
+    }, T_RED * 1000);
   }
 
   // ---- aplica la configuracion a la pagina ----
-  var actual = '', SEG = BASE.segundosPorSlide, ORDEN = TODOS.slice();
+  var actual = '', SEG = BASE.segundosPorSlide, T_RED = 2.8, ORDEN = TODOS.slice();
   function aplicar(cfg) {
     var c = Object.assign({}, BASE, cfg || {});
     if (params.get('ssid')) c.ssid = params.get('ssid');
@@ -319,6 +345,7 @@
     dibujarQr(cadenaWifi(c));
     dibujarRedes(c.redes);
     SEG = Math.max(4, c.segundosPorSlide || 12);
+    T_RED = Math.max(1.5, c.segundosPorRed || 2.8);
     var orden = (c.slides || TODOS).filter(function (s) { return TODOS.indexOf(s) >= 0; });
     ORDEN = orden.length ? orden : TODOS.slice();
     armarPuntos();
@@ -345,12 +372,14 @@
     idx = ((i % ORDEN.length) + ORDEN.length) % ORDEN.length;
     var activo = solo || ORDEN[idx];
     TODOS.forEach(function (s) { $('s-' + s).classList.toggle('active', s === activo); });
+    if (activo === 'redes') iniciarRedes(); else detenerRedes();
+    var dur = activo === 'redes' ? 1 + REDES.length * T_RED : SEG;
     pintarPuntos();
     clearTimeout(timer);
     barra.style.animation = 'none'; void barra.offsetWidth;
     if (!solo) {
-      barra.style.animation = 'llena ' + SEG + 's linear forwards';
-      timer = setTimeout(function () { mostrar(idx + 1); }, SEG * 1000);
+      barra.style.animation = 'llena ' + dur + 's linear forwards';
+      timer = setTimeout(function () { mostrar(idx + 1); }, dur * 1000);
     }
   }
   if (solo) { puntos.style.display = 'none'; document.querySelector('.progreso').style.display = 'none'; }
