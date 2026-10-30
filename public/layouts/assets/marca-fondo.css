@@ -1,6 +1,6 @@
 /* Fondo institucional animado — Manual de marca Fundación Barceló 2026 (version sobria).
-   Degradado de marca #0061F0 a #06038D (el mismo del boton de /m/canva/control.html), luces suaves
-   en celeste #00D1FF que se desplazan despacio. Sin bordes ni lineas duras. Las particulas
+   Degradado de marca que arranca en celeste #00D1FF (color de enfasis), pasa por el azul #0061F0 y
+   solo toca el azul marino #06038D en la esquina opuesta; luces suaves en celeste que se desplazan despacio. Sin bordes ni lineas duras. Las particulas
    (marca-fondo.js) mantienen un movimiento sutil constante: sirven para ver de un vistazo que el
    fondo no esta congelado cuando hay una imagen fija.
    Uso: <link rel="stylesheet" href="/layouts/assets/marca-fondo.css">
@@ -11,7 +11,7 @@
 .marca-bg {
   position: fixed; left: 0; top: 0;
   width: 1920px; height: 1080px;
-  background: linear-gradient(140deg, #0061F0 0%, #06038D 100%);
+  background: linear-gradient(140deg, #00D1FF -24%, #0061F0 38%, #0061F0 66%, #06038D 140%);
   overflow: hidden;
   pointer-events: none;
 }
@@ -20,7 +20,7 @@
 /* Luces suaves en celeste: sin borde, se leen como atmosfera y no como una forma */
 .marca-bg .m-luz {
   border-radius: 50%;            /* solo para que el degradado radial no tenga esquinas; no tiene borde */
-  background: radial-gradient(closest-side, rgba(0, 209, 255, .30), rgba(0, 209, 255, 0));
+  background: radial-gradient(closest-side, rgba(0, 209, 255, .45), rgba(0, 209, 255, 0));
 }
 .marca-bg .m-luz1 {
   width: 1300px; height: 900px; left: -300px; top: -260px;
@@ -28,7 +28,7 @@
 }
 .marca-bg .m-luz2 {
   width: 1100px; height: 800px; left: 950px; top: 480px;
-  background: radial-gradient(closest-side, rgba(0, 209, 255, .20), rgba(0, 209, 255, 0));
+  background: radial-gradient(closest-side, rgba(0, 209, 255, .38), rgba(0, 209, 255, 0));
   animation: m-luz2 20s ease-in-out infinite alternate;
 }
 @keyframes m-luz1 {
