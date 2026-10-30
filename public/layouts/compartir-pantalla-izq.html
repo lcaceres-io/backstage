@@ -4,59 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Compartir Pantalla Izq — Barceló</title>
+<link rel="stylesheet" href="/layouts/assets/marca-fondo.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     width: 100vw; height: 100vh;
     overflow: hidden;
-    background: linear-gradient(135deg, #03024f 0%, #06038D 40%, #0061F0 100%);
-  }
-
-  .bg-radial {
-    position: fixed; inset: 0;
-    background:
-      radial-gradient(ellipse 60% 60% at 20% 50%, rgba(0,97,240,0.4) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 40% at 80% 80%, rgba(0,209,255,0.2) 0%, transparent 70%);
-  }
-
-  .bg-grid {
-    position: fixed; inset: 0;
-    background-image:
-      linear-gradient(rgba(0,209,255,0.10) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,209,255,0.10) 1px, transparent 1px);
-    background-size: 60px 60px;
-    animation: gridMove 20s linear infinite;
-  }
-  @keyframes gridMove {
-    0%   { background-position: 0 0; }
-    100% { background-position: 60px 60px; }
-  }
-
-  .particles { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-
-  .particle {
-    position: absolute;
-    border-radius: 50%;
-    background: #00D1FF;
-    opacity: 0;
-    will-change: transform, opacity;
-    animation-name: floatUp;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-  }
-
-  .particle.glow {
-    background: #7FE6FF;
-    box-shadow: 0 0 6px 2px rgba(0,209,255,0.55);
-  }
-
-  @keyframes floatUp {
-    0%   { transform: translate(0, 0) scale(0); opacity: 0; }
-    10%  { opacity: 0.7; transform: translate(calc(var(--drift) * 0.2), -10px) scale(1); }
-    50%  { transform: translate(var(--drift), -65px) scale(1); }
-    90%  { opacity: 0.35; }
-    100% { transform: translate(calc(var(--drift) * 1.4), -150px) scale(0.3); opacity: 0; }
+    background: #0061F0;
   }
 
   /* ===== Rectángulo croma 720p — Compartir Pantalla ===== */
@@ -87,57 +42,10 @@
 </style>
 </head>
 <body>
-  <div class="bg-radial"></div>
-  <div class="bg-grid"></div>
-  <div class="particles" id="particles"></div>
+  <div class="marca-bg"><i class="m-navy"></i><i class="m-arco"></i><i class="m-arco m-arco2"></i><i class="m-cian"></i></div>
 
   <div class="screen-share"></div>
   <div class="screen-speaker"></div>
 
-  <script>
-    const TOTAL_PARTICLES = 140;
-    const GLOW_RATIO = 0.18;
-    const MIN_SIZE = 1, MAX_SIZE = 4;
-    const MIN_SIZE_GLOW = 3, MAX_SIZE_GLOW = 6;
-    const MIN_DUR = 3, MAX_DUR = 8;
-    const MAX_DELAY = 10;
-    const MAX_DRIFT_PX = 70;
-
-    const SAFE_ZONE_TOP = 35;
-    const SAFE_ZONE_BOTTOM = 65;
-
-    const container = document.getElementById('particles');
-
-    function randomTop() {
-      const topZone = Math.random() < 0.5;
-      return topZone
-        ? Math.random() * SAFE_ZONE_TOP
-        : SAFE_ZONE_BOTTOM + Math.random() * (100 - SAFE_ZONE_BOTTOM);
-    }
-
-    for (let i = 0; i < TOTAL_PARTICLES; i++) {
-      const p = document.createElement('div');
-      const isGlow = Math.random() < GLOW_RATIO;
-      p.className = isGlow ? 'particle glow' : 'particle';
-
-      const size = isGlow
-        ? MIN_SIZE_GLOW + Math.random() * (MAX_SIZE_GLOW - MIN_SIZE_GLOW)
-        : MIN_SIZE + Math.random() * (MAX_SIZE - MIN_SIZE);
-
-      const drift = (Math.random() * 2 - 1) * MAX_DRIFT_PX;
-
-      p.style.cssText = `
-        left: ${Math.random() * 100}%;
-        top: ${randomTop()}%;
-        animation-duration: ${MIN_DUR + Math.random() * (MAX_DUR - MIN_DUR)}s;
-        animation-delay: ${Math.random() * MAX_DELAY}s;
-        width: ${size}px;
-        height: ${size}px;
-        opacity: 0;
-        --drift: ${drift}px;
-      `;
-      container.appendChild(p);
-    }
-  </script>
 </body>
 </html>

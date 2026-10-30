@@ -1,0 +1,59 @@
+/* Fondo institucional animado — Manual de marca Fundación Barceló 2026.
+   Lenguaje del manual: campo azul plano #0061F0, forma grande azul marino #06038D de curva
+   redondeada abajo a la derecha, arco blanco fino arriba a la izquierda, cian #00D1FF de acento.
+   Sin grillas, sin degradados, sin particulas. Movimiento lento y suave.
+   Uso: <link rel="stylesheet" href="/layouts/assets/marca-fondo.css">
+        <div class="marca-bg"><i class="m-navy"></i><i class="m-arco"></i><i class="m-arco m-arco2"></i><i class="m-cian"></i></div>
+   Marco de referencia: 1920 x 1080. */
+
+.marca-bg {
+  position: fixed; left: 0; top: 0;
+  width: 1920px; height: 1080px;
+  background: #0061F0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.marca-bg i { position: absolute; display: block; border-radius: 50%; will-change: transform; }
+
+/* Forma azul marino, esquina inferior derecha */
+.marca-bg .m-navy {
+  width: 1180px; height: 1180px;
+  left: 1130px; top: 640px;
+  background: #06038D;
+  animation: m-navy 18s ease-in-out infinite alternate;
+}
+@keyframes m-navy {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(-46px, -34px) scale(1.035); }
+}
+
+/* Arco blanco fino, esquina superior izquierda */
+.marca-bg .m-arco {
+  width: 720px; height: 720px;
+  left: -230px; top: -400px;
+  border: 2px solid rgba(255,255,255,.92);
+  animation: m-arco 14s ease-in-out infinite alternate;
+}
+.marca-bg .m-arco2 {
+  width: 900px; height: 900px;
+  left: -320px; top: -470px;
+  border-color: rgba(255,255,255,.35);
+  animation-duration: 20s;
+  animation-direction: alternate-reverse;
+}
+@keyframes m-arco {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(34px, 22px) scale(1.04); }
+}
+
+/* Acento cian, esquina inferior izquierda */
+.marca-bg .m-cian {
+  width: 420px; height: 420px;
+  left: -190px; top: 900px;
+  background: #00D1FF;
+  animation: m-cian 16s ease-in-out infinite alternate;
+}
+@keyframes m-cian {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(40px, -26px); }
+}
