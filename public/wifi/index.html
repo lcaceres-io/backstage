@@ -93,16 +93,19 @@
                -webkit-mask: center / contain no-repeat; mask: center / contain no-repeat; }
   .rs-mini i.on { opacity: 1; transform: scale(1.18); }
 
-  /* ---------- Slide 4: silencio (celular dormido) ---------- */
-  .tel-wrap { width: 440px; height: 580px; position: relative; }
-  .tel-wrap svg { width: 100%; height: 100%; overflow: visible; display: block; }
-  .tel-g { transform-origin: 210px 300px; animation: duerme 4s ease-in-out infinite; }
-  @keyframes duerme { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-12px) rotate(2deg); } }
-  .cara { transform-origin: 210px 300px; animation: respira 4s ease-in-out infinite; }
-  @keyframes respira { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-  .zz { font-family: 'Montserrat', sans-serif; font-weight: 800; fill: #fff; opacity: 0; animation: zz 3.6s ease-in infinite; }
-  .zz.z2 { animation-delay: 1.2s; } .zz.z3 { animation-delay: 2.4s; }
-  @keyframes zz { 0% { opacity: 0; transform: translate(0, 26px) scale(.6); } 22% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(22px, -64px) scale(1.12); } }
+  /* ---------- Slide 4: silencio (icono plano, sin personajes) ---------- */
+  .silencio-escena { width: 100%; }
+  .silencio-ico { width: 300px; height: 300px; display: block; overflow: visible; margin: -10px 0 18px -22px; }
+  .campana { fill: none; stroke: #fff; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
+  .campana-g { transform-origin: 100px 34px; animation: suena 4.4s ease-in-out infinite; }
+  @keyframes suena {
+    0%, 4% { transform: rotate(0); } 8% { transform: rotate(12deg); } 14% { transform: rotate(-11deg); }
+    20% { transform: rotate(8deg); } 26% { transform: rotate(-6deg); } 32%, 100% { transform: rotate(0); }
+  }
+  .tajo-halo, .tajo { fill: none; stroke-linecap: round; stroke-dasharray: 190; stroke-dashoffset: 190; animation: tajo 4.4s ease-in-out infinite; }
+  .tajo-halo { stroke: var(--azul); stroke-width: 26; }   /* recorta la campana por detras del tajo */
+  .tajo { stroke: var(--cian); stroke-width: 10; }
+  @keyframes tajo { 0%, 32% { stroke-dashoffset: 190; } 46%, 90% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 190; } }
 
   /* ---------- Progreso ---------- */
   .puntos { position: absolute; left: 170px; bottom: 56px; display: flex; gap: 10px; z-index: 5; }
@@ -182,29 +185,21 @@
   <!-- 4: Silencio de celulares -->
   <section class="slide" id="s-silencio">
     <div class="col">
-      <div class="eyebrow item" style="--i:0">Un pedido chiquito</div>
-      <h1 class="item" style="--i:1">¿Le ponés<br>silencio al celu?</h1>
-      <div class="sub item" style="--i:2">Así disfrutamos todos del evento. ¡Gracias!</div>
+      <div class="eyebrow item" style="--i:0">Por favor</div>
+      <h1 class="item" style="--i:1">Silenciá<br>tus celulares</h1>
+      <div class="sub item" style="--i:2">Así todos podemos disfrutar del evento. ¡Gracias!</div>
     </div>
     <div class="right">
-      <div class="tel-wrap item" style="--i:2">
-        <svg viewBox="0 0 420 580" aria-hidden="true">
-          <g class="tel-g">
-            <rect x="80" y="50" width="260" height="480" rx="48" fill="#fff"/>
-            <rect x="98" y="68" width="224" height="444" rx="34" fill="#06038D"/>
-            <rect x="170" y="80" width="80" height="14" rx="7" fill="#0061F0"/>
-            <g class="cara">
-              <path d="M146 288 q24 26 48 0" fill="none" stroke="#00D1FF" stroke-width="9" stroke-linecap="round"/>
-              <path d="M226 288 q24 26 48 0" fill="none" stroke="#00D1FF" stroke-width="9" stroke-linecap="round"/>
-              <circle cx="134" cy="330" r="17" fill="#00D1FF" opacity=".28"/>
-              <circle cx="286" cy="330" r="17" fill="#00D1FF" opacity=".28"/>
-              <circle cx="210" cy="346" r="11" fill="none" stroke="#00D1FF" stroke-width="7"/>
-            </g>
+      <div class="silencio-escena item" style="--i:2">
+        <svg class="silencio-ico" viewBox="0 0 200 200" aria-hidden="true">
+          <g class="campana-g">
+            <path class="campana" d="M100 34c-26 0-44 20-44 46v28l-14 26h116l-14-26V80c0-26-18-46-44-46z"/>
+            <path class="campana" d="M84 148a16 16 0 0 0 32 0"/>
           </g>
-          <text class="zz z1" x="356" y="140" font-size="56">Z</text>
-          <text class="zz z2" x="384" y="98" font-size="42">z</text>
-          <text class="zz z3" x="408" y="64" font-size="32">z</text>
+          <path class="tajo-halo" d="M42 42 L158 158"/>
+          <path class="tajo" d="M42 42 L158 158"/>
         </svg>
+        <div class="rs-nombre">Modo silencio</div>
       </div>
     </div>
   </section>
