@@ -1,92 +1,61 @@
-/* Fondo institucional animado — Manual de marca Fundación Barceló 2026, version streaming.
-   Lenguaje del manual: campo azul #0061F0 y bloques rectangulares con un radio de borde muy
-   grande en una esquina (la "punta redondeada"), en azul marino #06038D y cian #00D1FF.
-   Aca se apilan como losas en capas que se deslizan despacio, mas trazos de velocidad
-   diagonales y particulas tenues (marca-fondo.js): da ritmo de canal de streaming sin tapar
-   lo que va encima, y sirve para ver de un vistazo que el fondo no esta congelado.
+/* Fondo institucional animado — Manual de marca Fundación Barceló 2026 (version sobria).
+   Degradado de marca #0061F0 a #06038D (el mismo del boton de /m/canva/control.html), luces suaves
+   en celeste #00D1FF que se desplazan despacio y dos paneles rectos casi invisibles. Las particulas
+   (marca-fondo.js) mantienen un movimiento sutil constante: sirven para ver de un vistazo que el
+   fondo no esta congelado cuando hay una imagen fija.
    Uso: <link rel="stylesheet" href="/layouts/assets/marca-fondo.css">
-        <div class="marca-bg"><i class="m-losa m-navy"></i><i class="m-losa m-cian"></i><i class="m-losa m-alta"></i><i class="m-losa m-marco"></i></div>
+        <div class="marca-bg"><i class="m-luz m-luz1"></i><i class="m-luz m-luz2"></i><i class="m-panel m-p1"></i><i class="m-panel m-p2"></i></div>
         <script src="/layouts/assets/marca-fondo.js"></script>
    Marco de referencia: 1920 x 1080. */
 
 .marca-bg {
   position: fixed; left: 0; top: 0;
   width: 1920px; height: 1080px;
-  background: #0061F0;
+  background: linear-gradient(140deg, #0061F0 0%, #06038D 100%);
   overflow: hidden;
   pointer-events: none;
 }
-.marca-bg::before {            /* luz suave que da profundidad, sin ensuciar el azul plano */
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse 70% 60% at 25% 20%, rgba(255,255,255,.10), transparent 70%);
-}
-.marca-bg .m-losa { position: absolute; display: block; will-change: transform; }
+.marca-bg i { position: absolute; display: block; will-change: transform; }
 
-/* Losa azul marino abajo a la derecha: punta redondeada arriba a la izquierda */
-.marca-bg .m-navy {
-  left: 980px; top: 640px; width: 1100px; height: 700px;
-  background: rgba(6, 3, 141, .62);
-  border-top-left-radius: 420px;
-  animation: m-navy 12s ease-in-out infinite alternate;
+/* Luces suaves en celeste: sin borde, se leen como atmosfera y no como una forma */
+.marca-bg .m-luz {
+  border-radius: 50%;            /* solo para que el degradado radial no tenga esquinas; no tiene borde */
+  background: radial-gradient(closest-side, rgba(0, 209, 255, .30), rgba(0, 209, 255, 0));
 }
-@keyframes m-navy {
-  from { transform: translate(70px, 20px); }
-  to   { transform: translate(-90px, -36px); }
+.marca-bg .m-luz1 {
+  width: 1300px; height: 900px; left: -300px; top: -260px;
+  animation: m-luz1 16s ease-in-out infinite alternate;
 }
-
-/* Banda cian abajo a la izquierda: punta redondeada a la derecha */
-.marca-bg .m-cian {
-  left: -420px; top: 922px; width: 1000px; height: 190px;
-  background: rgba(0, 209, 255, .42);
-  border-radius: 0 95px 95px 0;
-  animation: m-cian 9s ease-in-out infinite alternate;
+.marca-bg .m-luz2 {
+  width: 1100px; height: 800px; left: 950px; top: 480px;
+  background: radial-gradient(closest-side, rgba(0, 209, 255, .20), rgba(0, 209, 255, 0));
+  animation: m-luz2 20s ease-in-out infinite alternate;
 }
-@keyframes m-cian {
-  from { transform: translateX(-50px); }
-  to   { transform: translateX(150px); }
+@keyframes m-luz1 {
+  from { transform: translate(-60px, -30px) scale(.95); }
+  to   { transform: translate(260px, 150px) scale(1.1); }
+}
+@keyframes m-luz2 {
+  from { transform: translate(120px, 60px) scale(1.05); }
+  to   { transform: translate(-200px, -110px) scale(.92); }
 }
 
-/* Losa alta arriba a la izquierda, azul marino: punta redondeada abajo a la derecha */
-.marca-bg .m-alta {
-  left: -240px; top: -330px; width: 760px; height: 560px;
-  background: rgba(6, 3, 141, .38);
-  border-bottom-right-radius: 280px;
-  animation: m-alta 14s ease-in-out infinite alternate;
+/* Paneles rectos, apenas visibles */
+.marca-bg .m-panel {
+  background: rgba(255, 255, 255, .045);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .09);
+  border-radius: 28px;
 }
-@keyframes m-alta {
-  from { transform: translate(-30px, -20px); }
-  to   { transform: translate(110px, 50px); }
+.marca-bg .m-p1 {
+  width: 760px; height: 520px; left: -140px; top: -170px;
+  animation: m-p1 22s ease-in-out infinite alternate;
 }
-
-/* Marco blanco fino arriba a la derecha: punta redondeada abajo a la izquierda */
-.marca-bg .m-marco {
-  left: 1470px; top: -260px; width: 640px; height: 460px;
-  border: 2px solid rgba(255, 255, 255, .4);
-  border-bottom-left-radius: 230px;
-  animation: m-marco 10s ease-in-out infinite alternate;
+.marca-bg .m-p2 {
+  width: 900px; height: 600px; left: 1330px; top: 700px;
+  animation: m-p2 26s ease-in-out infinite alternate;
 }
-@keyframes m-marco {
-  from { transform: translate(40px, -24px); }
-  to   { transform: translate(-90px, 46px); }
-}
-
-/* Trazos de velocidad: pildoras finas que cruzan en diagonal (las crea marca-fondo.js) */
-.marca-bg .m-linea {
-  position: absolute; left: -900px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, .26);
-  transform: rotate(-16deg);
-  opacity: 0;
-  will-change: transform, opacity;
-  animation: m-barre linear infinite;
-}
-.marca-bg .m-linea.cian { background: rgba(127, 230, 255, .30); }
-@keyframes m-barre {
-  0%   { transform: translateX(0) rotate(-16deg); opacity: 0; }
-  12%  { opacity: 1; }
-  88%  { opacity: 1; }
-  100% { transform: translateX(3300px) rotate(-16deg); opacity: 0; }
-}
+@keyframes m-p1 { from { transform: translate(-20px, -10px); } to { transform: translate(90px, 50px); } }
+@keyframes m-p2 { from { transform: translate(50px, 30px); }  to { transform: translate(-100px, -50px); } }
 
 /* Particulas (las crea marca-fondo.js) */
 .marca-bg .m-part {
@@ -95,8 +64,8 @@
   will-change: transform, opacity;
   animation-name: m-flota; animation-timing-function: ease-in-out; animation-iteration-count: infinite;
 }
-.marca-bg .m-part.cian { background: #7FE6FF; }
-.marca-bg .m-part.glow { box-shadow: 0 0 7px 2px rgba(190, 240, 255, .6); }
+.marca-bg .m-part.cian { background: #00D1FF; }
+.marca-bg .m-part.glow { box-shadow: 0 0 7px 2px rgba(0, 209, 255, .55); }
 @keyframes m-flota {
   0%   { transform: translate(0, 0) scale(0); opacity: 0; }
   12%  { opacity: .6; transform: translate(calc(var(--drift) * .2), -12px) scale(1); }
