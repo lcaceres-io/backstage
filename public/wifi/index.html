@@ -44,28 +44,17 @@
   h1  { font-size: 84px; line-height: 1.06; font-weight: 700; letter-spacing: -.025em; }
   .sub { font-size: 30px; line-height: 1.4; font-weight: 500; color: rgba(255,255,255,.86); margin-top: 24px; text-wrap: balance; }
 
-  /* Superficie unica: tarjeta blanca */
-  .card { width: 100%; background: #fff; color: var(--marino); border-radius: 28px; overflow: hidden;
-          box-shadow: 0 1px 2px rgba(2,0,70,.12), 0 14px 30px rgba(2,0,70,.18), 0 40px 80px rgba(2,0,70,.22); }
-  .fila { display: flex; align-items: center; gap: 28px; padding: 0 44px; border-top: 1px solid rgba(6,3,141,.10); }
-  .fila:first-child { border-top: 0; }
-  .rotulo { font-size: 20px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--azul); }
-
-  /* ---------- Slide 1: WiFi en texto ---------- */
-  .card-wifi .cab { display: flex; align-items: center; gap: 20px; padding: 32px 44px 26px; }
-  .card-wifi .cab .t { font-size: 24px; font-weight: 600; color: rgba(6,3,141,.72); }
-  .chip-ico { flex: 0 0 64px; height: 64px; border-radius: 18px; background: #E8F1FF; display: grid; place-items: center; }
-  .chip-ico svg { width: 38px; height: 38px; }
-  .wifi path { fill: none; stroke: var(--azul); stroke-width: 26; stroke-linecap: round; }
-  .wifi circle { fill: var(--azul); }
+  /* ---------- Slide 1: WiFi en texto (todo sobre el azul, igual que redes) ---------- */
+  .wifi-escena { width: 100%; }
+  .wifi { width: 150px; height: 150px; display: block; margin-bottom: 34px; }
+  .wifi path { fill: none; stroke: #fff; stroke-width: 26; stroke-linecap: round; }
+  .wifi circle { fill: #fff; }
   .wifi .a1, .wifi .a2, .wifi .a3 { opacity: .3; animation: onda 2.6s ease-in-out infinite; }
   .wifi .a2 { animation-delay: .25s; } .wifi .a3 { animation-delay: .5s; }
   .wifi .punto { animation: punto 2.6s ease-in-out infinite; transform-origin: 210px 340px; }
   @keyframes onda { 0%, 100% { opacity: .3; } 35%, 55% { opacity: 1; } }
   @keyframes punto { 0%, 100% { transform: scale(1); } 20% { transform: scale(1.18); } }
-  .card-wifi .fila { height: 134px; }
-  .card-wifi .rotulo { flex: 0 0 120px; }
-  .card-wifi .valor { flex: 1; min-width: 0; font-size: 54px; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; line-height: 1.12; }
+  .dato-bloque + .dato-bloque { margin-top: 30px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,.26); }
 
   /* ---------- Slide 2: QR ---------- */
   .pasos { list-style: none; margin-top: 48px; }
@@ -75,7 +64,7 @@
   .red-nota { margin-top: 26px; font-size: 24px; font-weight: 500; color: rgba(255,255,255,.86); }
   .red-nota b { font-weight: 800; color: #fff; }
 
-  .qr-card { position: relative; width: 520px; height: 520px; padding: 22px; }
+  .qr-card { position: relative; width: 520px; height: 520px; padding: 22px; background: #fff; border-radius: 22px; overflow: hidden; }  /* unico blanco: el QR necesita fondo claro para leerse */
   .qr-card svg { width: 100%; height: 100%; display: block; }
   .scan { position: absolute; left: 0; right: 0; top: 0; height: 100px; pointer-events: none;
           background: linear-gradient(180deg, rgba(0,209,255,0), rgba(0,209,255,.14) 70%, rgba(0,209,255,0));
@@ -136,20 +125,15 @@
       <div class="sub item" style="--i:2">Usá estos datos desde tu celular o tu notebook</div>
     </div>
     <div class="right">
-      <div class="card card-wifi item" style="--i:2">
-        <div class="cab">
-          <div class="chip-ico">
-            <svg class="wifi" viewBox="0 0 420 420" aria-hidden="true">
-              <path class="a3" d="M30 160 A250 250 0 0 1 390 160"/>
-              <path class="a2" d="M85 222 A170 170 0 0 1 335 222"/>
-              <path class="a1" d="M140 282 A90 90 0 0 1 280 282"/>
-              <circle class="punto" cx="210" cy="340" r="26"/>
-            </svg>
-          </div>
-          <div class="t">Datos de conexión</div>
-        </div>
-        <div class="fila"><div class="rotulo">Red</div><div class="valor" id="vRed"></div></div>
-        <div class="fila"><div class="rotulo">Clave</div><div class="valor" id="vClave"></div></div>
+      <div class="wifi-escena item" style="--i:2">
+        <svg class="wifi" viewBox="0 0 420 420" aria-hidden="true">
+          <path class="a3" d="M30 160 A250 250 0 0 1 390 160"/>
+          <path class="a2" d="M85 222 A170 170 0 0 1 335 222"/>
+          <path class="a1" d="M140 282 A90 90 0 0 1 280 282"/>
+          <circle class="punto" cx="210" cy="340" r="26"/>
+        </svg>
+        <div class="dato-bloque"><div class="rs-nombre">Red</div><span class="rs-usuario" id="vRed"></span></div>
+        <div class="dato-bloque"><div class="rs-nombre">Clave</div><span class="rs-usuario" id="vClave"></span></div>
       </div>
     </div>
   </section>
@@ -167,7 +151,7 @@
       <div class="red-nota item" style="--i:5">Red: <b id="vRed2"></b></div>
     </div>
     <div class="right">
-      <div class="card qr-card item" style="--i:2">
+      <div class="qr-card item" style="--i:2">
         <div id="qr"></div>
         <div class="qr-error" id="qrError"></div>
         <div class="scan"></div>
