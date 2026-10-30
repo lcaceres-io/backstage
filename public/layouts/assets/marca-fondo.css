@@ -1,10 +1,10 @@
 /* Fondo institucional animado — Manual de marca Fundación Barceló 2026 (version sobria).
    Degradado de marca #0061F0 a #06038D (el mismo del boton de /m/canva/control.html), luces suaves
-   en celeste #00D1FF que se desplazan despacio y dos paneles rectos casi invisibles. Las particulas
+   en celeste #00D1FF que se desplazan despacio. Sin bordes ni lineas duras. Las particulas
    (marca-fondo.js) mantienen un movimiento sutil constante: sirven para ver de un vistazo que el
    fondo no esta congelado cuando hay una imagen fija.
    Uso: <link rel="stylesheet" href="/layouts/assets/marca-fondo.css">
-        <div class="marca-bg"><i class="m-luz m-luz1"></i><i class="m-luz m-luz2"></i><i class="m-panel m-p1"></i><i class="m-panel m-p2"></i></div>
+        <div class="marca-bg"><i class="m-luz m-luz1"></i><i class="m-luz m-luz2"></i></div>
         <script src="/layouts/assets/marca-fondo.js"></script>
    Marco de referencia: 1920 x 1080. */
 
@@ -39,23 +39,6 @@
   from { transform: translate(120px, 60px) scale(1.05); }
   to   { transform: translate(-200px, -110px) scale(.92); }
 }
-
-/* Paneles rectos, apenas visibles */
-.marca-bg .m-panel {
-  background: rgba(255, 255, 255, .045);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .09);
-  border-radius: 28px;
-}
-.marca-bg .m-p1 {
-  width: 760px; height: 520px; left: -140px; top: -170px;
-  animation: m-p1 22s ease-in-out infinite alternate;
-}
-.marca-bg .m-p2 {
-  width: 900px; height: 600px; left: 1330px; top: 700px;
-  animation: m-p2 26s ease-in-out infinite alternate;
-}
-@keyframes m-p1 { from { transform: translate(-20px, -10px); } to { transform: translate(90px, 50px); } }
-@keyframes m-p2 { from { transform: translate(50px, 30px); }  to { transform: translate(-100px, -50px); } }
 
 /* Particulas (las crea marca-fondo.js) */
 .marca-bg .m-part {
