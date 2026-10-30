@@ -4,5 +4,11 @@
   "security": "WPA",
   "hidden": false,
   "segundosPorSlide": 12,
-  "tema": "claro"
+  "slides": ["texto", "qr", "redes", "silencio"],
+  "redes": [
+    { "nombre": "Instagram", "usuario": "@fundbarcelo",      "icono": "instagram" },
+    { "nombre": "X",         "usuario": "@Fundbarcelo",      "icono": "x" },
+    { "nombre": "Facebook",  "usuario": "@fundacionbarcelo", "icono": "facebook" },
+    { "nombre": "LinkedIn",  "usuario": "@fundacionbarcelo", "icono": "linkedin" }
+  ]
 }
