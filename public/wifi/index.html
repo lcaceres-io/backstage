@@ -9,10 +9,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
   /* Pantalla de bienvenida — Manual de marca Fundación Barceló 2026.
-     Cuatro slides que rotan solos: 1) WiFi en texto, 2) WiFi por QR, 3) Redes sociales, 4) Silencio de celulares.
+     Cinco slides que rotan solos: 0) Bienvenida, 1) WiFi en texto, 2) WiFi por QR, 3) Redes sociales, 4) Silencio de celulares.
      La red, la clave, las redes y los slides salen de wifi.json: al cambiar la clave, el QR se regenera solo.
      Parametros por URL (opcionales, pisan wifi.json):
-       ?ssid=Red  ?clave=Clave  ?seg=12 (segundos por slide)  ?solo=texto | qr | redes | silencio (fija un slide)
+       ?ssid=Red  ?clave=Clave  ?seg=12 (segundos por slide)  ?solo=bienvenida | texto | qr | redes | silencio (fija un slide)
+       ?evento=Nombre del evento  ?fecha=12 de noviembre · 18:30 h  ?lugar=Auditorio Principal   (slide de bienvenida;
+       sin evento queda solo "Bienvenidos", y fecha y lugar se muestran solo si se indican)
      Diseno: campo plano #0061F0 y el contenido encima. Una sola superficie (tarjeta blanca), una escala
      tipografica corta, divisores finos y movimiento solo donde comunica algo. */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,6 +29,9 @@
   .logo { position: absolute; left: 90px; top: 72px; width: 190px; height: 66px; z-index: 5; background: #fff;
           -webkit-mask: url(/layouts/assets/logo-fundacion-blanco.png) left center / contain no-repeat;
                   mask: url(/layouts/assets/logo-fundacion-blanco.png) left center / contain no-repeat; }
+
+  .logo { transition: opacity .5s ease; }
+  #stage.bienv .logo { opacity: 0; }   /* en la bienvenida la marca va chica abajo, no arriba */
 
   .slide { position: absolute; inset: 0; z-index: 2; opacity: 0; visibility: hidden;
            transition: opacity .6s ease, visibility 0s linear .6s; }
@@ -107,6 +112,39 @@
   .tajo { stroke: var(--cian); stroke-width: 10; }
   @keyframes tajo { 0%, 32% { stroke-dashoffset: 190; } 46%, 90% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 190; } }
 
+  /* ---------- Slide 0: bienvenida (proyector del auditorio mientras entra la gente) ---------- */
+  .bv-col { width: 1500px; align-items: flex-start; padding-bottom: 40px; }
+  .bv-saludo { font-size: 46px; font-weight: 700; letter-spacing: -.01em; color: var(--cian); margin-bottom: 16px; }
+  /* Titulo: se revela de izquierda a derecha y despues un brillo suave lo recorre cada tanto */
+  .bv-titulo { display: inline-block; font-size: 118px; line-height: 1.04; letter-spacing: -.03em; text-wrap: balance; max-width: 1400px;
+               color: transparent; -webkit-background-clip: text; background-clip: text;
+               background-image: linear-gradient(100deg, #fff 0%, #fff 40%, #B9E9FF 50%, #fff 60%, #fff 100%);
+               background-size: 320% 100%; background-position: 120% 0; clip-path: inset(0 100% 0 0); }
+  .slide.active .bv-titulo { animation: revela 1.3s cubic-bezier(.65,0,.2,1) .45s forwards, brillo 7s ease-in-out 2.4s infinite; }
+  @keyframes revela { to { clip-path: inset(0 0 0 0); } }
+  @keyframes brillo { 0% { background-position: 120% 0; } 38%, 100% { background-position: -20% 0; } }
+  .bv-col.solo .bv-titulo { font-size: 176px; }   /* sin evento, "Bienvenidos" es el titulo */
+
+  /* Linea celeste: se traza y una luz corre por ella */
+  .linea { height: 5px; width: 0; margin-top: 44px; background: rgba(0,209,255,.35); border-radius: 3px; position: relative; overflow: hidden; }
+  .linea::after { content: ''; position: absolute; top: 0; bottom: 0; width: 60px; left: -60px; background: var(--cian); border-radius: 3px; }
+  .slide.active .linea { animation: traza 1.2s cubic-bezier(.22,1,.36,1) 1.1s forwards; }
+  .slide.active .linea::after { animation: viaja 2.8s ease-in-out 2.4s infinite; }
+  @keyframes traza { to { width: 180px; } }
+  @keyframes viaja { 0% { left: -60px; } 60%, 100% { left: 180px; } }
+
+  .bv-info { display: flex; margin-top: 36px; }
+  .bv-info .dato + .dato { margin-left: 70px; padding-left: 70px; border-left: 1px solid rgba(255,255,255,.26); }
+  .bv-info .rot { font-size: 20px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--cian); margin-bottom: 10px; }
+  .bv-info .val { font-size: 44px; font-weight: 700; letter-spacing: -.015em; line-height: 1.12; }
+  .bv-col .sub { margin-top: 40px; font-size: 36px; }
+
+  .bv-logo { position: absolute; left: 170px; bottom: 112px; width: 260px; height: 90px; background: #fff; opacity: 0;
+             -webkit-mask: url(/layouts/assets/logo-fundacion-blanco.png) left center / contain no-repeat;
+                     mask: url(/layouts/assets/logo-fundacion-blanco.png) left center / contain no-repeat; }
+  .slide.active .bv-logo { animation: entra-logo 1s cubic-bezier(.22,1,.36,1) 1.6s both; }
+  @keyframes entra-logo { from { opacity: 0; transform: translateY(20px) scale(.94); } to { opacity: 1; transform: none; } }
+
   /* ---------- Progreso ---------- */
   .puntos { position: absolute; left: 170px; bottom: 56px; display: flex; gap: 10px; z-index: 5; }
   .puntos i { width: 12px; height: 12px; border-radius: 6px; background: rgba(255,255,255,.38); transition: width .4s, background .4s; }
@@ -119,6 +157,18 @@
 <body>
 <div id="stage">
   <div class="logo" role="img" aria-label="Fundación Barceló"></div>
+
+  <!-- 0: Bienvenida -->
+  <section class="slide" id="s-bienvenida">
+    <div class="col bv-col" id="bvCol">
+      <div class="bv-saludo item" style="--i:0" id="bvSaludo">Bienvenidos</div>
+      <h1 class="bv-titulo" id="bvTitulo">Bienvenidos</h1>
+      <div class="linea"></div>
+      <div class="bv-info" id="bvInfo"></div>
+      <div class="sub item" style="--i:8">Tomá asiento, en breve comenzamos</div>
+    </div>
+    <div class="bv-logo" role="img" aria-label="Fundación Barceló"></div>
+  </section>
 
   <!-- 1: WiFi en texto -->
   <section class="slide" id="s-texto">
@@ -214,7 +264,8 @@
   // Valores por defecto: se reemplazan por wifi.json y, encima, por los parametros de la URL.
   var BASE = {
     ssid: 'NOMBRE-DE-RED', password: 'CLAVE', security: 'WPA', hidden: false, segundosPorSlide: 12,
-    slides: ['texto', 'qr', 'redes', 'silencio'],
+    evento: '', fecha: '', lugar: '',
+    slides: ['bienvenida', 'texto', 'qr', 'redes', 'silencio'],
     redes: [
       { nombre: 'Instagram', usuario: '@fundbarcelo',      icono: 'instagram' },
       { nombre: 'X',         usuario: '@Fundbarcelo',      icono: 'x' },
@@ -224,7 +275,7 @@
   };
   var params = new URLSearchParams(location.search);
   var $ = function (id) { return document.getElementById(id); };
-  var TODOS = ['texto', 'qr', 'redes', 'silencio'];
+  var TODOS = ['bienvenida', 'texto', 'qr', 'redes', 'silencio'];
 
   // ---- escala el escenario a la pantalla (el fondo es plano y llena toda la ventana) ----
   var stage = $('stage');
@@ -307,6 +358,23 @@
     }, T_RED * 1000);
   }
 
+  // Bienvenida: con evento, "Bienvenidos" va de saludo y el evento es el titulo; sin evento, "Bienvenidos" es el titulo.
+  // Fecha y lugar se muestran solo si se indican. Todo entra como texto (nunca como HTML).
+  function dibujarBienvenida(evento, fecha, lugar) {
+    $('bvCol').classList.toggle('solo', !evento);
+    $('bvSaludo').style.display = evento ? '' : 'none';
+    $('bvTitulo').textContent = evento || 'Bienvenidos';
+    var info = $('bvInfo'); info.innerHTML = '';
+    [['Fecha', fecha], ['Lugar', lugar]].forEach(function (d, k) {
+      if (!d[1]) return;
+      var el = document.createElement('div'); el.className = 'dato item'; el.style.setProperty('--i', 5 + k);
+      var r = document.createElement('div'); r.className = 'rot'; r.textContent = d[0];
+      var v = document.createElement('div'); v.className = 'val'; v.textContent = d[1];
+      el.appendChild(r); el.appendChild(v); info.appendChild(el);
+    });
+    info.style.display = info.children.length ? '' : 'none';
+  }
+
   // ---- aplica la configuracion a la pagina ----
   var actual = '', SEG = BASE.segundosPorSlide, T_RED = 2.8, ORDEN = TODOS.slice();
   function aplicar(cfg) {
@@ -314,6 +382,7 @@
     if (params.get('ssid')) c.ssid = params.get('ssid');
     if (params.get('clave')) c.password = params.get('clave');
     if (params.get('seg')) c.segundosPorSlide = parseFloat(params.get('seg'));
+    ['evento', 'fecha', 'lugar'].forEach(function (k) { c[k] = String(params.get(k) || c[k] || '').trim(); });
     var firma = JSON.stringify(c);
     if (firma === actual) return;       // sin cambios: no toca nada
     actual = firma;
@@ -323,6 +392,7 @@
     ajustar($('vRed')); ajustar($('vClave'));
     dibujarQr(cadenaWifi(c));
     dibujarRedes(c.redes);
+    dibujarBienvenida(c.evento, c.fecha, c.lugar);
     SEG = Math.max(4, c.segundosPorSlide || 12);
     T_RED = Math.max(1.5, c.segundosPorRed || 2.8);
     var orden = (c.slides || TODOS).filter(function (s) { return TODOS.indexOf(s) >= 0; });
@@ -351,6 +421,7 @@
     idx = ((i % ORDEN.length) + ORDEN.length) % ORDEN.length;
     var activo = solo || ORDEN[idx];
     TODOS.forEach(function (s) { $('s-' + s).classList.toggle('active', s === activo); });
+    stage.classList.toggle('bienv', activo === 'bienvenida');
     if (activo === 'redes') iniciarRedes(); else detenerRedes();
     var dur = activo === 'redes' ? 1 + REDES.length * T_RED : SEG;
     pintarPuntos();
