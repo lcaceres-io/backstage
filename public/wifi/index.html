@@ -116,7 +116,7 @@
   .bv-col { width: 1500px; align-items: flex-start; padding-bottom: 40px; }
   .bv-saludo { font-size: 46px; font-weight: 700; letter-spacing: -.01em; color: var(--cian); margin-bottom: 16px; }
   /* Titulo: se revela de izquierda a derecha y despues un brillo suave lo recorre cada tanto */
-  .bv-titulo { display: inline-block; font-size: 118px; line-height: 1.04; letter-spacing: -.03em; text-wrap: balance; max-width: 1400px;
+  .bv-titulo { display: inline-block; font-size: 118px; line-height: 1.04; letter-spacing: -.03em; text-wrap: balance; max-width: 1500px;
                padding: 0 .12em .16em 0; margin: 0 -.12em -.16em 0;   /* aire para los trazos que bajan (g, p, q, y) y para la ultima letra dentro del recorte de la animacion */
                color: transparent; -webkit-background-clip: text; background-clip: text;
                background-image: linear-gradient(100deg, #fff 0%, #fff 40%, #B9E9FF 50%, #fff 60%, #fff 100%);
@@ -374,6 +374,16 @@
       el.appendChild(r); el.appendChild(v); info.appendChild(el);
     });
     info.style.display = info.children.length ? '' : 'none';
+    ajustarTitulo();
+  }
+
+  // Nombres de evento largos: el titulo se achica hasta que entre en poco alto (maximo unas tres lineas),
+  // para que no choque con la invitacion de abajo ni con la marca.
+  function ajustarTitulo() {
+    var t = $('bvTitulo'); t.style.fontSize = '';
+    if ($('bvCol').classList.contains('solo')) return;       // sin evento: "Bienvenidos" va grande
+    var px = parseFloat(getComputedStyle(t).fontSize);
+    while (t.offsetHeight > 330 && px > 56) { px -= 4; t.style.fontSize = px + 'px'; }
   }
 
   // ---- aplica la configuracion a la pagina ----
