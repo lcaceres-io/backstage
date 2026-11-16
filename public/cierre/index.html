@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cierre — Fundación Barceló</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* Pantalla de cierre — Manual de marca Fundación Barceló 2026.
+     Para dejar en loop, sin sonido, cuando termina el evento: "El evento ha finalizado".
+     Parametros por URL (opcionales):  ?evento=Nombre del evento   (se muestra arriba, en celeste)
+     Diseno: azul de marca en tonos, una luz suave que respira y simbolos "+" que flotan despacio
+     (algunos desenfocados para dar profundidad). Movimiento lento y continuo; nada brusco. */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --azul:#0061F0; --marino:#06038D; --cian:#00D1FF; }
+
+  html, body { width: 100%; height: 100%; overflow: hidden; background: var(--azul); }
+  body { font-family: 'Sofia Pro', 'Montserrat', sans-serif; color: #fff; }
+
+  /* Fondo tonal a pantalla completa (fuera del escenario escalado, asi llega a todos los bordes) */
+  #fondo { position: fixed; inset: 0; overflow: hidden; background: var(--azul); }
+  #fondo .luz { position: absolute; border-radius: 50%; will-change: transform; }
+  #fondo .l1 { width: 95vw; height: 85vh; left: -22vw; top: -28vh;
+               background: radial-gradient(closest-side, rgba(255,255,255,.16), rgba(255,255,255,0)); animation: l1 22s ease-in-out infinite alternate; }
+  #fondo .l2 { width: 100vw; height: 90vh; right: -26vw; bottom: -34vh;
+               background: radial-gradient(closest-side, rgba(6,3,141,.62), rgba(6,3,141,0)); animation: l2 26s ease-in-out infinite alternate; }
+  @keyframes l1 { from { transform: translate(-3vw, -2vh); } to { transform: translate(12vw, 8vh); } }
+  @keyframes l2 { from { transform: translate(4vw, 3vh); }   to { transform: translate(-10vw, -7vh); } }
+
+  /* Simbolos "+": se crean con JS. Suben despacio, giran un poco y aparecen y se van suavemente. */
+  .mas { position: absolute; width: var(--s); height: var(--s); opacity: 0; will-change: transform, opacity;
+         animation: sube-mas var(--d) ease-in-out var(--r) infinite; }
+  .mas::before, .mas::after { content: ''; position: absolute; background: var(--c, #fff); border-radius: calc(var(--s) * .07); }
+  .mas::before { left: 41%; right: 41%; top: 0; bottom: 0; }
+  .mas::after  { top: 41%; bottom: 41%; left: 0; right: 0; }
+  @keyframes sube-mas {
+    0%   { opacity: 0;           transform: translate(0, 7vh)             rotate(var(--g0)); }
+    18%  { opacity: var(--o); }
+    82%  { opacity: var(--o); }
+    100% { opacity: 0;           transform: translate(var(--dx), -26vh)   rotate(var(--g1)); }
+  }
+
+  /* Escenario fijo 1920x1080 que se escala para entrar en cualquier pantalla */
+  #stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+
+  .col { position: absolute; left: 170px; top: 0; bottom: 0; width: 1500px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding-bottom: 40px; }
+  .evento { font-size: 46px; font-weight: 700; letter-spacing: -.01em; color: var(--cian); margin-bottom: 16px; }
+  .item { opacity: 0; animation: sube 1.6s cubic-bezier(.22,1,.36,1) both; animation-delay: calc(var(--i, 0) * .3s + .4s); }
+  @keyframes sube { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+
+  /* Titulo: se revela una vez y despues un brillo muy suave lo recorre cada tanto */
+  h1 { display: inline-block; font-size: 130px; line-height: 1.04; font-weight: 700; letter-spacing: -.03em; text-wrap: balance; max-width: 1500px;
+       padding: 0 .12em .16em 0; margin: 0 -.12em -.16em 0;
+       color: transparent; -webkit-background-clip: text; background-clip: text;
+       background-image: linear-gradient(100deg, #fff 0%, #fff 40%, #B9E9FF 50%, #fff 60%, #fff 100%);
+       background-size: 320% 100%; background-position: 120% 0; clip-path: inset(0 100% 0 0);
+       animation: revela 2.2s cubic-bezier(.65,0,.2,1) .8s forwards, brillo 9s ease-in-out 4s infinite; }
+  @keyframes revela { to { clip-path: inset(0 0 0 0); } }
+  @keyframes brillo { 0% { background-position: 120% 0; } 38%, 100% { background-position: -20% 0; } }
+
+  .linea { height: 5px; width: 0; margin-top: 44px; background: rgba(0,209,255,.35); border-radius: 3px; position: relative; overflow: hidden;
+           animation: traza 1.6s cubic-bezier(.22,1,.36,1) 2s forwards; }
+  .linea::after { content: ''; position: absolute; top: 0; bottom: 0; width: 60px; left: -60px; background: var(--cian); border-radius: 3px;
+                  animation: viaja 3.4s ease-in-out 4s infinite; }
+  @keyframes traza { to { width: 180px; } }
+  @keyframes viaja { 0% { left: -60px; } 60%, 100% { left: 180px; } }
+
+  .sub { font-size: 38px; line-height: 1.4; font-weight: 500; color: rgba(255,255,255,.9); margin-top: 40px; }
+
+  .logo { position: absolute; left: 170px; bottom: 96px; width: 260px; height: 90px; background: #fff; opacity: 0;
+          -webkit-mask: url(/layouts/assets/logo-fundacion-blanco.png) left center / contain no-repeat;
+                  mask: url(/layouts/assets/logo-fundacion-blanco.png) left center / contain no-repeat;
+          animation: entra-logo 2s cubic-bezier(.22,1,.36,1) 3s both; }
+  @keyframes entra-logo { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<div id="fondo"><i class="luz l1"></i><i class="luz l2"></i></div>
+
+<div id="stage">
+  <div class="col">
+    <div class="evento item" style="--i:0" id="evento"></div>
+    <h1>El evento ha finalizado</h1>
+    <div class="linea"></div>
+    <div class="sub item" style="--i:6">Gracias por acompañarnos. ¡Hasta la próxima!</div>
+  </div>
+  <div class="logo" role="img" aria-label="Fundación Barceló"></div>
+</div>
+
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var $ = function (id) { return document.getElementById(id); };
+
+  // ---- evento (opcional): se muestra como texto, nunca como HTML ----
+  var evento = String(params.get('evento') || '').trim();
+  $('evento').textContent = evento;
+  $('evento').style.display = evento ? '' : 'none';
+
+  // ---- escala el escenario a la pantalla (el fondo llena toda la ventana por su cuenta) ----
+  var stage = $('stage');
+  function escalar() {
+    var s = Math.min(innerWidth / 1920, innerHeight / 1080);
+    stage.style.transform = 'translate(' + (innerWidth - 1920 * s) / 2 + 'px,' + (innerHeight - 1080 * s) / 2 + 'px) scale(' + s + ')';
+    document.documentElement.style.setProperty('--k', s);
+  }
+  addEventListener('resize', escalar); escalar();
+
+  // ---- simbolos "+" flotando: distintos tamanos, los grandes mas suaves y desenfocados (profundidad) ----
+  var fondo = $('fondo'), r = function (a, b) { return a + Math.random() * (b - a); };
+  var CANTIDAD = 26, frag = document.createDocumentFragment();
+  for (var i = 0; i < CANTIDAD; i++) {
+    var t = Math.pow(Math.random(), 1.6);              // sesgo a tamanos chicos
+    var size = 26 + t * 150;                           // 26 a 176 px (en un frame de 1080)
+    var el = document.createElement('div');
+    el.className = 'mas';
+    el.style.left = r(-2, 98) + '%';
+    el.style.top = r(8, 100) + '%';
+    el.style.setProperty('--s', 'calc(' + size.toFixed(1) + 'px * var(--k, 1))');
+    el.style.setProperty('--o', (size > 110 ? r(.05, .09) : r(.10, .19)).toFixed(2));
+    el.style.setProperty('--d', r(26, 46).toFixed(1) + 's');
+    el.style.setProperty('--r', '-' + r(0, 46).toFixed(1) + 's');          // ya repartidos por la pantalla al cargar
+    el.style.setProperty('--dx', r(-6, 6).toFixed(1) + 'vw');
+    el.style.setProperty('--g0', r(-25, 25).toFixed(0) + 'deg');
+    el.style.setProperty('--g1', r(-70, 70).toFixed(0) + 'deg');
+    if (Math.random() < 0.18) el.style.setProperty('--c', '#B9E9FF');       // algunos en celeste muy claro
+    if (size > 120) el.style.filter = 'blur(' + (size > 150 ? 3 : 1.5) + 'px)';
+    frag.appendChild(el);
+  }
+  fondo.appendChild(frag);
+})();
+</script>
+</body>
+</html>
