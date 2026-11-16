@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>En breve comenzamos — Fundación Barceló</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* Pantalla de espera — Manual de marca Fundación Barceló 2026.
+     Para dejar en loop, sin sonido, mientras se conecta todo para la transmision: "En breve comenzamos".
+     Parametros por URL (opcionales):
+       ?evento=Nombre del evento   (se muestra arriba, en celeste)
+       ?hora=18:00                 (muestra "Comenzamos a las 18:00 h"; si se escribe otro texto, se muestra tal cual)
+       ?figura=b | icono           (la figura que flota; por defecto b)
+     Diseno: azul de marca en tonos, una luz suave que respira, figuras de la marca que suben derechas (las grandes,
+     desenfocadas, para dar profundidad), letras que entran una por una y una ola suave que las recorre, y una barra
+     de carga fina que va y viene. Movimiento continuo pero sereno. */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --azul:#0061F0; --marino:#06038D; --cian:#00D1FF; }
+
+  html, body { width: 100%; height: 100%; overflow: hidden; background: var(--azul); }
+  body { font-family: 'Sofia Pro', 'Montserrat', sans-serif; color: #fff; }
+
+  /* Fondo tonal a pantalla completa (fuera del escenario escalado, asi llega a todos los bordes) */
+  #fondo { position: fixed; inset: 0; overflow: hidden; background: var(--azul); }
+  #fondo .luz { position: absolute; border-radius: 50%; will-change: transform; }
+  #fondo .l1 { width: 95vw; height: 85vh; left: -22vw; top: -28vh;
+               background: radial-gradient(closest-side, rgba(255,255,255,.17), rgba(255,255,255,0)); animation: l1 30s ease-in-out infinite alternate; }
+  #fondo .l2 { width: 100vw; height: 90vh; right: -26vw; bottom: -34vh;
+               background: radial-gradient(closest-side, rgba(6,3,141,.60), rgba(6,3,141,0)); animation: l2 36s ease-in-out infinite alternate; }
+  @keyframes l1 { from { transform: translate(-3vw, -2vh); } to { transform: translate(12vw, 8vh); } }
+  @keyframes l2 { from { transform: translate(4vw, 3vh); }   to { transform: translate(-10vw, -7vh); } }
+
+  /* Las figuras desaparecen alrededor del logo (abajo al centro): el manual pide un area libre alrededor de la marca */
+  .figs { position: absolute; inset: 0;
+          -webkit-mask-image: radial-gradient(ellipse 17% 13% at 50% 87%, transparent 55%, #000 100%);
+                  mask-image: radial-gradient(ellipse 17% 13% at 50% 87%, transparent 55%, #000 100%); }
+  /* Figuras de la marca: se crean con JS. Todas derechas (sin girar) y subiendo en la misma direccion; el tamano marca la profundidad. */
+  .fig { position: absolute; width: var(--s); height: var(--s); opacity: 0; will-change: transform, opacity;
+         animation: flota var(--d) ease-in-out var(--r) infinite; }
+  #fondo[data-figura="b"] .fig { height: calc(var(--s) * 1.2); background: var(--c, #fff);
+         -webkit-mask: url(img/b.png) center / contain no-repeat; mask: url(img/b.png) center / contain no-repeat; }
+  #fondo[data-figura="icono"] .fig { background: var(--c, #fff); border-radius: 26%; }
+  #fondo[data-figura="icono"] .fig::after { content: ''; position: absolute; inset: 20% 22% 20% 22%; background: var(--azul);
+         -webkit-mask: url(img/b.png) center / contain no-repeat; mask: url(img/b.png) center / contain no-repeat; }
+  @keyframes flota {
+    0%   { opacity: 0;  transform: translate(0, 4vh); }
+    22%  { opacity: var(--o); }
+    78%  { opacity: var(--o); }
+    100% { opacity: 0;  transform: translate(var(--dx), -32vh); }
+  }
+
+  /* Escenario fijo 1920x1080 que se escala para entrar en cualquier pantalla */
+  #stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+
+  .col { position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center;
+         text-align: center; padding: 0 200px 110px; }
+  .item { opacity: 0; animation: sube 1.6s cubic-bezier(.22,1,.36,1) both; animation-delay: calc(var(--i, 0) * .3s + .4s); }
+  @keyframes sube { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+
+  .evento { font-size: 32px; line-height: 1.3; font-weight: 600; letter-spacing: .01em; color: var(--cian); margin-bottom: 26px; max-width: 1200px; text-wrap: balance; }
+
+  /* Titulo: las letras entran una por una y, cada tanto, una ola suave las recorre */
+  h1 { font-size: 112px; line-height: 1.08; font-weight: 700; letter-spacing: -.025em; max-width: 1500px; }
+  h1 .w { display: inline-block; white-space: nowrap; }
+  h1 .l { display: inline-block; opacity: 0; transform: translateY(.55em);
+          animation: entra-l 1.1s cubic-bezier(.22,1,.36,1) forwards, ola 11s ease-in-out infinite;
+          animation-delay: calc(.5s + var(--n) * .06s), calc(5s + var(--n) * .075s); }
+  @keyframes entra-l { to { opacity: 1; transform: translateY(0); } }
+  @keyframes ola { 0%, 16%, 100% { transform: translateY(0); } 8% { transform: translateY(-.1em); } }
+
+  /* Barra de carga fina: una luz celeste va y viene, suave (por transform), para que se note que se esta preparando todo */
+  .carga { width: 0; height: 4px; margin-top: 40px; background: rgba(0,209,255,.26); border-radius: 2px; position: relative; overflow: hidden;
+           animation: traza 2.2s cubic-bezier(.45,0,.2,1) 1.6s forwards; }
+  .carga::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 110px; border-radius: 2px; will-change: transform;
+                  background: linear-gradient(90deg, rgba(0,209,255,0), var(--cian) 50%, rgba(0,209,255,0));
+                  transform: translateX(-120px); animation: vaiven 3.6s cubic-bezier(.45,0,.55,1) 3.8s infinite alternate; }
+  @keyframes traza { to { width: 320px; } }
+  @keyframes vaiven { from { transform: translateX(-120px); } to { transform: translateX(330px); } }
+
+  .sub { font-size: 30px; line-height: 1.4; font-weight: 500; color: rgba(255,255,255,.9); margin-top: 34px; }
+  .hora { font-size: 30px; line-height: 1.4; font-weight: 700; color: #fff; margin-top: 10px; }
+
+  .logo { position: absolute; left: 50%; margin-left: -110px; bottom: 92px; width: 220px; height: 76px; background: #fff; opacity: 0;
+          -webkit-mask: url(/layouts/assets/logo-fundacion-blanco.png) center / contain no-repeat;
+                  mask: url(/layouts/assets/logo-fundacion-blanco.png) center / contain no-repeat;
+          animation: entra-logo 2s cubic-bezier(.22,1,.36,1) 3s both; }
+  @keyframes entra-logo { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<div id="fondo"><i class="luz l1"></i><i class="luz l2"></i><div class="figs" id="figs"></div></div>
+
+<div id="stage">
+  <div class="col">
+    <div class="evento item" style="--i:0" id="evento"></div>
+    <h1 id="titulo" aria-label="En breve comenzamos">En breve comenzamos</h1>
+    <div class="carga"></div>
+    <div class="sub item" style="--i:7">Gracias por esperarnos</div>
+    <div class="hora item" style="--i:8" id="hora"></div>
+  </div>
+  <div class="logo" role="img" aria-label="Fundación Barceló"></div>
+</div>
+
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var $ = function (id) { return document.getElementById(id); };
+
+  // ---- evento y hora (opcionales): se muestran como texto, nunca como HTML ----
+  var evento = String(params.get('evento') || '').trim();
+  $('evento').textContent = evento;
+  $('evento').style.display = evento ? '' : 'none';
+  var hora = String(params.get('hora') || '').trim();
+  if (/^\d{1,2}[:.]\d{2}$/.test(hora)) hora = 'Comenzamos a las ' + hora.replace('.', ':') + ' h';
+  $('hora').textContent = hora;
+  $('hora').style.display = hora ? '' : 'none';
+
+  // ---- titulo: cada letra en su propio elemento, para que entren una por una y la ola las recorra ----
+  var t = $('titulo'), texto = t.textContent, n = 0;
+  t.innerHTML = '';
+  texto.split(' ').forEach(function (palabra, i, todas) {
+    var w = document.createElement('span'); w.className = 'w'; w.setAttribute('aria-hidden', 'true');
+    palabra.split('').forEach(function (ch) {
+      var l = document.createElement('span'); l.className = 'l'; l.textContent = ch; l.style.setProperty('--n', n++); w.appendChild(l);
+    });
+    t.appendChild(w);
+    if (i < todas.length - 1) t.appendChild(document.createTextNode(' '));
+  });
+
+  // ---- escala el escenario a la pantalla (el fondo llena toda la ventana por su cuenta) ----
+  var stage = $('stage');
+  function escalar() {
+    var s = Math.min(innerWidth / 1920, innerHeight / 1080);
+    stage.style.transform = 'translate(' + (innerWidth - 1920 * s) / 2 + 'px,' + (innerHeight - 1080 * s) / 2 + 'px) scale(' + s + ')';
+    document.documentElement.style.setProperty('--k', s);
+  }
+  addEventListener('resize', escalar); escalar();
+
+  // ---- figuras de la marca flotando: tres planos de profundidad, todas derechas y subiendo en la misma direccion ----
+  var fondo = $('fondo'), figs = $('figs'), r = function (a, b) { return a + Math.random() * (b - a); };
+  var figura = ['b', 'icono'].indexOf(params.get('figura')) >= 0 ? params.get('figura') : 'b';
+  fondo.setAttribute('data-figura', figura);
+  // plano: tamano (px en un frame de 1080), opacidad, desenfoque, segundos por vuelta (mas grande = mas lento), cantidad
+  var PLANOS = [
+    { tam: [34, 60],   o: [.16, .24], blur: 0,   dur: [20, 28], n: 9 },
+    { tam: [80, 120],  o: [.10, .15], blur: 0.6, dur: [28, 38], n: 7 },
+    { tam: [170, 250], o: [.05, .09], blur: 3.5, dur: [38, 52], n: 4 }
+  ];
+  var frag = document.createDocumentFragment();
+  PLANOS.forEach(function (p) {
+    for (var i = 0; i < p.n; i++) {
+      var size = r(p.tam[0], p.tam[1]), dur = r(p.dur[0], p.dur[1]);
+      var el = document.createElement('div');
+      el.className = 'fig';
+      el.style.left = (((i + r(.1, .9)) / p.n) * 100 - 3).toFixed(1) + '%';   // reparto parejo a lo ancho
+      el.style.top = r(12, 100).toFixed(1) + '%';
+      el.style.setProperty('--s', 'calc(' + size.toFixed(1) + 'px * var(--k, 1))');
+      el.style.setProperty('--o', r(p.o[0], p.o[1]).toFixed(2));
+      el.style.setProperty('--d', dur.toFixed(0) + 's');
+      el.style.setProperty('--r', '-' + r(0, dur).toFixed(0) + 's');        // ya repartidas por la pantalla al cargar
+      el.style.setProperty('--dx', r(-1.2, 1.2).toFixed(1) + 'vw');
+      if (p.blur) el.style.filter = 'blur(' + p.blur + 'px)';
+      frag.appendChild(el);
+    }
+  });
+  figs.appendChild(frag);
+})();
+</script>
+</body>
+</html>
