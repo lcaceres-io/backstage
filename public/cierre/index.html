@@ -33,10 +33,10 @@
   @keyframes l1 { from { transform: translate(-3vw, -2vh); } to { transform: translate(12vw, 8vh); } }
   @keyframes l2 { from { transform: translate(4vw, 3vh); }   to { transform: translate(-10vw, -7vh); } }
 
-  /* Las figuras desaparecen alrededor del logo (abajo a la izquierda): el manual pide un area libre alrededor de la marca */
+  /* Las figuras desaparecen alrededor del logo (abajo al centro): el manual pide un area libre alrededor de la marca */
   .figs { position: absolute; inset: 0;
-          -webkit-mask-image: radial-gradient(ellipse 20% 14% at 16% 86%, transparent 55%, #000 100%);
-                  mask-image: radial-gradient(ellipse 20% 14% at 16% 86%, transparent 55%, #000 100%); }
+          -webkit-mask-image: radial-gradient(ellipse 17% 13% at 50% 87%, transparent 55%, #000 100%);
+                  mask-image: radial-gradient(ellipse 17% 13% at 50% 87%, transparent 55%, #000 100%); }
   /* Figuras de la marca: se crean con JS. Todas derechas (sin girar), iguales entre si y subiendo en la misma direccion;
      el tamano marca la profundidad: las grandes son mas lentas, difusas y tenues. */
   .fig { position: absolute; width: var(--s); height: var(--s); opacity: 0; will-change: transform, opacity;
@@ -58,14 +58,16 @@
   /* Escenario fijo 1920x1080 que se escala para entrar en cualquier pantalla */
   #stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
 
-  .col { position: absolute; left: 170px; top: 0; bottom: 0; width: 1500px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding-bottom: 40px; }
-  .evento { font-size: 46px; font-weight: 700; letter-spacing: -.01em; color: var(--cian); margin-bottom: 16px; }
+  /* Todo centrado y en tamano de apoyo: es una pantalla para dejar en calma, no para anunciar */
+  .col { position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center;
+         text-align: center; padding: 0 200px 110px; }
+  .evento { font-size: 30px; line-height: 1.3; font-weight: 600; letter-spacing: .01em; color: var(--cian); margin-bottom: 26px; max-width: 1200px; text-wrap: balance; }
   .item { opacity: 0; animation: sube 1.6s cubic-bezier(.22,1,.36,1) both; animation-delay: calc(var(--i, 0) * .3s + .4s); }
   @keyframes sube { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
 
   /* Titulo: se revela una vez y despues un brillo muy suave lo recorre cada tanto */
-  h1 { display: inline-block; font-size: 130px; line-height: 1.04; font-weight: 700; letter-spacing: -.03em; text-wrap: balance; max-width: 1500px;
-       padding: 0 .12em .16em 0; margin: 0 -.12em -.16em 0;
+  h1 { display: inline-block; font-size: 76px; line-height: 1.08; font-weight: 700; letter-spacing: -.02em; text-wrap: balance; max-width: 1400px;
+       padding: 0 .12em .16em .12em; margin: 0 -.12em -.16em -.12em;
        color: transparent; -webkit-background-clip: text; background-clip: text;
        background-image: linear-gradient(100deg, #fff 0%, #fff 40%, #B9E9FF 50%, #fff 60%, #fff 100%);
        background-size: 320% 100%; background-position: 120% 0; clip-path: inset(0 100% 0 0);
@@ -74,19 +76,19 @@
   @keyframes brillo { 0% { background-position: 120% 0; } 32%, 100% { background-position: -20% 0; } }
 
   /* Linea celeste: se traza una vez y una luz la recorre muy despacio, con pausas largas (movimiento por transform, sin saltos) */
-  .linea { height: 5px; width: 0; margin-top: 44px; background: rgba(0,209,255,.30); border-radius: 3px; position: relative; overflow: hidden;
+  .linea { height: 4px; width: 0; margin-top: 34px; background: rgba(0,209,255,.30); border-radius: 2px; position: relative; overflow: hidden;
            animation: traza 2.8s cubic-bezier(.45,0,.2,1) 2.2s forwards; }
-  .linea::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 110px; border-radius: 3px; will-change: transform;
+  .linea::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 90px; border-radius: 2px; will-change: transform;
                   background: linear-gradient(90deg, rgba(0,209,255,0), var(--cian) 50%, rgba(0,209,255,0));
-                  transform: translateX(-130px); animation: viaja 16s cubic-bezier(.45,0,.55,1) 6s infinite; }
-  @keyframes traza { to { width: 180px; } }
-  @keyframes viaja { 0% { transform: translateX(-130px); } 45%, 100% { transform: translateX(200px); } }
+                  transform: translateX(-110px); animation: viaja 16s cubic-bezier(.45,0,.55,1) 6s infinite; }
+  @keyframes traza { to { width: 120px; } }
+  @keyframes viaja { 0% { transform: translateX(-110px); } 45%, 100% { transform: translateX(140px); } }
 
-  .sub { font-size: 38px; line-height: 1.4; font-weight: 500; color: rgba(255,255,255,.9); margin-top: 40px; }
+  .sub { font-size: 28px; line-height: 1.4; font-weight: 500; color: rgba(255,255,255,.88); margin-top: 30px; }
 
-  .logo { position: absolute; left: 170px; bottom: 96px; width: 260px; height: 90px; background: #fff; opacity: 0;
-          -webkit-mask: url(/layouts/assets/logo-fundacion-blanco.png) left center / contain no-repeat;
-                  mask: url(/layouts/assets/logo-fundacion-blanco.png) left center / contain no-repeat;
+  .logo { position: absolute; left: 50%; margin-left: -110px; bottom: 92px; width: 220px; height: 76px; background: #fff; opacity: 0;
+          -webkit-mask: url(/layouts/assets/logo-fundacion-blanco.png) center / contain no-repeat;
+                  mask: url(/layouts/assets/logo-fundacion-blanco.png) center / contain no-repeat;
           animation: entra-logo 2s cubic-bezier(.22,1,.36,1) 3s both; }
   @keyframes entra-logo { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 </style>
