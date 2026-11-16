@@ -11,12 +11,12 @@
   /* Pantalla de cierre — Manual de marca Fundación Barceló 2026.
      Para dejar en loop, sin sonido, cuando termina el evento: "El evento ha finalizado".
      Parametros por URL (opcionales):  ?evento=Nombre del evento   (se muestra arriba, en celeste)
-                                       ?figura=b | tab | arco       (la figura que flota; por defecto b)
-     Diseno: azul de marca en tonos, una luz suave que respira y figuras del manual de marca que flotan muy
-     despacio (las grandes, desenfocadas, para dar profundidad). Todo lento y continuo, para transmitir calma:
-       tab  = bloque cuadrado con una esquina muy redondeada (la forma de los bloques del manual)
-       arco = el trazo blanco fino del fondo de pantalla del manual
-       b    = el isotipo "B" de la marca */
+                                       ?figura=b | icono            (la figura que flota; por defecto b)
+     Diseno: azul de marca en tonos, una luz suave que respira y figuras de la marca que flotan muy despacio,
+     todas derechas y subiendo juntas (las grandes, desenfocadas, para dar profundidad). Todo lento y continuo,
+     para transmitir calma:
+       b     = el isotipo "B" de la marca
+       icono = el boton de aplicacion del manual: la "B" dentro de un cuadrado de esquinas redondeadas */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root { --azul:#0061F0; --marino:#06038D; --cian:#00D1FF; }
 
@@ -37,21 +37,22 @@
   .figs { position: absolute; inset: 0;
           -webkit-mask-image: radial-gradient(ellipse 20% 14% at 16% 86%, transparent 55%, #000 100%);
                   mask-image: radial-gradient(ellipse 20% 14% at 16% 86%, transparent 55%, #000 100%); }
-  /* Figuras del manual de marca: se crean con JS. Suben muy despacio, giran apenas y aparecen y se van suavemente. */
+  /* Figuras de la marca: se crean con JS. Todas derechas (sin girar), iguales entre si y subiendo en la misma direccion;
+     el tamano marca la profundidad: las grandes son mas lentas, difusas y tenues. */
   .fig { position: absolute; width: var(--s); height: var(--s); opacity: 0; will-change: transform, opacity;
          animation: flota var(--d) ease-in-out var(--r) infinite; }
-  /* tab: cuadrado con una esquina muy redondeada, como los bloques del manual */
-  #fondo[data-figura="tab"] .fig { background: var(--c, #fff); border-radius: 100% 0 0 0; }
-  /* arco: el trazo fino del fondo de pantalla del manual */
-  #fondo[data-figura="arco"] .fig { border: max(2px, calc(var(--s) * .016)) solid var(--c, #fff); border-radius: 100% 0 0 0; }
-  /* b: el isotipo de la marca */
+  /* b: el isotipo de la marca, derecho */
   #fondo[data-figura="b"] .fig { height: calc(var(--s) * 1.2); background: var(--c, #fff);
          -webkit-mask: url(img/b.png) center / contain no-repeat; mask: url(img/b.png) center / contain no-repeat; }
+  /* icono: el boton de aplicacion del manual (pag. 45): la "B" dentro de un cuadrado de esquinas redondeadas */
+  #fondo[data-figura="icono"] .fig { background: var(--c, #fff); border-radius: 26%; }
+  #fondo[data-figura="icono"] .fig::after { content: ''; position: absolute; inset: 20% 22% 20% 22%; background: var(--azul);
+         -webkit-mask: url(img/b.png) center / contain no-repeat; mask: url(img/b.png) center / contain no-repeat; }
   @keyframes flota {
-    0%   { opacity: 0;          transform: translate(0, 5vh)            rotate(var(--g0)); }
+    0%   { opacity: 0;  transform: translate(0, 4vh); }
     22%  { opacity: var(--o); }
     78%  { opacity: var(--o); }
-    100% { opacity: 0;          transform: translate(var(--dx), -20vh)  rotate(var(--g1)); }
+    100% { opacity: 0;  transform: translate(var(--dx), -22vh); }
   }
 
   /* Escenario fijo 1920x1080 que se escala para entrar en cualquier pantalla */
@@ -122,33 +123,36 @@
   }
   addEventListener('resize', escalar); escalar();
 
-  // ---- figuras del manual flotando: distintos tamanos, las grandes mas suaves y desenfocadas (profundidad) ----
+  // ---- figuras de la marca flotando: tres planos de profundidad, todas derechas y subiendo en la misma direccion ----
   var fondo = $('fondo'), figs = $('figs'), r = function (a, b) { return a + Math.random() * (b - a); };
-  var FIGURAS = ['tab', 'arco', 'b'];
+  var FIGURAS = ['b', 'icono'];
   var figura = FIGURAS.indexOf(params.get('figura')) >= 0 ? params.get('figura') : 'b';
   fondo.setAttribute('data-figura', figura);
-  var GIRO = figura === 'tab' || figura === 'arco';       // los bloques con una esquina redonda giran de a 90 grados
-  var OPAC = figura === 'arco' ? 2.4 : 1;                 // el trazo fino necesita mas opacidad para verse
-  var CANTIDAD = 20, frag = document.createDocumentFragment();
-  for (var i = 0; i < CANTIDAD; i++) {
-    var t = Math.pow(Math.random(), 1.5);                 // sesgo a tamanos chicos
-    var size = 40 + t * 200;                              // 40 a 240 px (en un frame de 1080)
-    var el = document.createElement('div');
-    el.className = 'fig';
-    el.style.left = r(-3, 97) + '%';
-    el.style.top = r(10, 100) + '%';
-    el.style.setProperty('--s', 'calc(' + size.toFixed(1) + 'px * var(--k, 1))');
-    el.style.setProperty('--o', ((size > 130 ? r(.05, .09) : r(.09, .17)) * OPAC).toFixed(2));
-    el.style.setProperty('--d', r(70, 120).toFixed(0) + 's');                  // muy lento: casi un minuto y medio por vuelta
-    el.style.setProperty('--r', '-' + r(0, 120).toFixed(0) + 's');             // ya repartidas por la pantalla al cargar
-    el.style.setProperty('--dx', r(-4, 4).toFixed(1) + 'vw');
-    var g0 = GIRO ? Math.floor(r(0, 4)) * 90 + r(-8, 8) : r(-14, 14);
-    el.style.setProperty('--g0', g0.toFixed(0) + 'deg');
-    el.style.setProperty('--g1', (g0 + r(-28, 28)).toFixed(0) + 'deg');         // gira apenas durante el recorrido
-    if (Math.random() < 0.25) el.style.setProperty('--c', '#7FE6FF');           // algunas en celeste claro
-    if (size > 150) el.style.filter = 'blur(' + (size > 200 ? 3.5 : 2) + 'px)';
-    frag.appendChild(el);
-  }
+  // plano: tamano (px en un frame de 1080), opacidad, desenfoque, segundos por vuelta (mas grande = mas lento), cantidad
+  var PLANOS = [
+    { tam: [34, 60],   o: [.15, .22], blur: 0,   dur: [70, 95],   n: 8 },
+    { tam: [80, 120],  o: [.09, .14], blur: 0.6, dur: [95, 125],  n: 6 },
+    { tam: [170, 250], o: [.05, .08], blur: 3.5, dur: [125, 165], n: 4 }
+  ];
+  var frag = document.createDocumentFragment();
+  PLANOS.forEach(function (p) {
+    for (var i = 0; i < p.n; i++) {
+      var size = r(p.tam[0], p.tam[1]);
+      var dur = r(p.dur[0], p.dur[1]);
+      var el = document.createElement('div');
+      el.className = 'fig';
+      // reparto parejo a lo ancho (una por franja, con un poco de azar) para que no se amontonen
+      el.style.left = (((i + r(.1, .9)) / p.n) * 100 - 3).toFixed(1) + '%';
+      el.style.top = r(12, 100).toFixed(1) + '%';
+      el.style.setProperty('--s', 'calc(' + size.toFixed(1) + 'px * var(--k, 1))');
+      el.style.setProperty('--o', r(p.o[0], p.o[1]).toFixed(2));
+      el.style.setProperty('--d', dur.toFixed(0) + 's');
+      el.style.setProperty('--r', '-' + r(0, dur).toFixed(0) + 's');        // ya repartidas por la pantalla al cargar
+      el.style.setProperty('--dx', r(-1.2, 1.2).toFixed(1) + 'vw');          // casi vertical: solo un leve vaiven
+      if (p.blur) el.style.filter = 'blur(' + p.blur + 'px)';
+      frag.appendChild(el);
+    }
+  });
   figs.appendChild(frag);
 })();
 </script>
