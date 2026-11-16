@@ -52,7 +52,7 @@
     0%   { opacity: 0;  transform: translate(0, 4vh); }
     22%  { opacity: var(--o); }
     78%  { opacity: var(--o); }
-    100% { opacity: 0;  transform: translate(var(--dx), -22vh); }
+    100% { opacity: 0;  transform: translate(var(--dx), -28vh); }
   }
 
   /* Escenario fijo 1920x1080 que se escala para entrar en cualquier pantalla */
@@ -130,9 +130,9 @@
   fondo.setAttribute('data-figura', figura);
   // plano: tamano (px en un frame de 1080), opacidad, desenfoque, segundos por vuelta (mas grande = mas lento), cantidad
   var PLANOS = [
-    { tam: [34, 60],   o: [.15, .22], blur: 0,   dur: [70, 95],   n: 8 },
-    { tam: [80, 120],  o: [.09, .14], blur: 0.6, dur: [95, 125],  n: 6 },
-    { tam: [170, 250], o: [.05, .08], blur: 3.5, dur: [125, 165], n: 4 }
+    { tam: [34, 60],   o: [.15, .22], blur: 0,   dur: [30, 42],   n: 8 },
+    { tam: [80, 120],  o: [.09, .14], blur: 0.6, dur: [42, 56],   n: 6 },
+    { tam: [170, 250], o: [.05, .08], blur: 3.5, dur: [56, 74],   n: 4 }
   ];
   var frag = document.createDocumentFragment();
   PLANOS.forEach(function (p) {
